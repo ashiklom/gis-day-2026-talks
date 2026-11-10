@@ -1,0 +1,28 @@
+{
+  "name": "cloud-native-geospatial-talk",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "slidev --open=false",
+    "build": "slidev build",
+    "export": "slidev export --with-clicks"
+  },
+  "dependencies": {
+    "@deck.gl/core": "^9.4.1",
+    "@deck.gl/geo-layers": "^9.4.1",
+    "@deck.gl/layers": "^9.4.1",
+    "@deck.gl/mesh-layers": "^9.4.1",
+    "@developmentseed/deck.gl-geotiff": "^0.10.0",
+    "@developmentseed/range-reader": "^0.10.0",
+    "@iconify-json/carbon": "^1.2.30",
+    "@iconify-json/mdi": "^1.2.3",
+    "@luma.gl/core": "^9.4.2",
+    "@slidev/cli": "^53.1.0",
+    "@slidev/theme-default": "^0.25.0",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.22",
+    "playwright-chromium": "^1.65.0"
+  }
+}
