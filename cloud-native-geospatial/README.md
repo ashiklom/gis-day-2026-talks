@@ -3,7 +3,7 @@
 *New capabilities enabled by cloud computing and the modern geospatial software stack*
 (Yale GIS Day 2026)
 
-Slides are built with [Slidev](https://sli.dev). The source outline is in [`prompt.md`](prompt.md).
+Slides are built with [Slidev](https://sli.dev). The source outline is in [`prompt.md`](prompt.md), which is the source of truth: to revise the talk, edit `prompt.md` and ask Claude to sync the slides to it (conventions are in the comment at the top of that file).
 
 ```bash
 npm install
@@ -22,7 +22,7 @@ npm run export     # PDF (needs: npx playwright install chromium)
   - `TileUrlDemo.vue`, `TileGridMap.vue`: OpenStreetMap tiles
   - `DeckRasterDemo.vue`: deck.gl-raster reading a Sentinel-2 COG straight from S3
 - Animations: `RemoteReadAnimation.vue`, `TiffLayoutAnimation.vue`, `TileUrlTemplate.vue` (driven by slide clicks).
-- `public/fallback/`: cached images shown automatically when a live demo can't reach the network (conference wifi insurance). Regenerate with `node scripts/capture-fallbacks.mjs` while `npm run dev` is running.
+- `public/fallback/`: cached images shown automatically when a live demo can't reach the network (conference wifi insurance). Regenerate with `node scripts/capture.mjs fallbacks` while `npm run dev` is running.
 
 ## Data used
 
