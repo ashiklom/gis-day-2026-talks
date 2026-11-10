@@ -4,7 +4,7 @@ AI instructions
 This file is the source of truth for the deck. The deck itself is a Slidev project in this folder (slides.md, components/, snippets/). I revise the talk by editing THIS file only, then asking you to "sync".
 
 How to sync:
-- Diff this file against its last committed version (`git diff prompt.md`, or against the commit I name). Change only the slides / demos / notes that correspond to what I edited. Do not regenerate or restyle untouched slides.
+- Diff this file against its last committed version (`git diff prompt.md`, or against the commit I name). Change only the slides / demos / notes that correspond to what I edited. Do not regenerate or restyle untouched slides (unless there are changes to shared assets like icons; those should be propagated throughout).
 - Use the "Shared resources" section at the bottom to find which file implements each slide, and keep that section up to date when things move.
 - New slides: follow the look of the existing ones and reuse the icon library (components/icons.ts, via <GeoIcon name="…" />) and the shared diagram components. Add new icons to the library rather than inlining them.
 - If a demo's default view changes, refresh its offline fallback image (`node scripts/capture.mjs fallbacks` while `npm run dev` is running).
@@ -18,9 +18,11 @@ Conventions:
 - Text inside {{{ }}} is what appears on the slide. Plain text and bullets in there are shown word for word.
 - <angle brackets> inside {{{ }}} = rendering hints / instructions, not shown.
 - <click> at the start of a line = that item appears on the next click. A numbered list under <click steps> describes an animation, one step per click.
+    - On the same line, `<click> A <click> -> B <click> -> C` : A click renders everything up to the next click, so the sequence here is: (nothing); <click> makes "A" appear; <click> makes "-> B" appear; <click> makes "-> C" appear.
 - <demo settings> = values that drive a live demo (presets, layers, defaults). Edit them freely.
 - (stub) in a title = placeholder slide, not written yet.
 - Flow notation in diagrams: `A → (verb) → B` is a pipeline step. `[GIS: …]` is a labelled box around steps.
+- Text inside <<double angle brackes>> are even more general instructions. These should first be updated to more precise <single-bracked instructions> and any other changes needed to follow the conventions above. Make these changes first and ask me to review; if approved, then commit separately proceed with rendering the rest of the deck.
 -->
 
 # (Title Slide)
@@ -37,24 +39,40 @@ November 16, 2026 · Yale GIS Day 2026
 <Cover layout, left-aligned. Small row of icons above the title: cloud, internet, laptop.>
 }}}
 
-# Introduction
+## Outline
 
-## Concepts
+{{{
+<click steps>
+(1) Traditional mapping workflow and its limitations
+(2) Mapping without (local copies of) the data: Remote access patterns
+(3) Making it fast
+(4) Putting it all together: YCGS Bowerbird
+}}}
+
+# Traditional mapping workflow and its limitations
+
+<<Section header slide>>
+
+## How to make a map
 
 Every map you've ever made follows the same steps: read raw data into a spatial layer, process it, then render an image.
 
-[click] The question for this talk is *where* each of those steps runs: on your laptop, on an institutional server, on an FTP site, or on compute and storage you rent from a commercial cloud. These are all connected by the internet.
+To make maps, geographers have lots of tools at their disposal.
+The goal of this talk is to show you that there is tremendous flexibility in how the steps of the mapping workflow are executed by these different tools.
 
 {{{
-<Centered> The mapping process
+<Left, middle aligned with diagram, bigger> Mapping workflow
 
 <Pipeline diagram, large icons:>
-Raw data → (read) → Spatial layer → (process) → Processed layer → (render) → Image
+<click> Raw data <click> → (read) → Spatial layer <click> → (process) → Processed layer <click> → (render) → Image
 
-<click> <Centered> Where it runs
+<click> <Left, middle aligned with diagram, bigger> Geographer's toolbox
 
 <Network diagram:>
-Your computer <laptop>, connected by a dashed line to a central "internet" hub <internet icon>.
+<<Grouped conceptually with/under your computer, put "GIS" and "Web Browser" and their icons. Save these for reuse later. The entire local computer "box" should be connected to the Internet hub.>>
+<<Animation sequence: <click> Computer <click> GIS + Web browser <click> network diagram >>
+<<Make sure "Internet" + icon are properly centered inside their hub circle. Make each spoke of the hub the same length, so the diagram is symmerical>>
+Your computer <laptop>, connected by a dashed line to a central "Internet" hub <internet icon>.
 The hub links to four nodes:
 - Institutional server <server>
 - FTP / remote storage <storage>
@@ -75,12 +93,38 @@ Problems:
 
 {{{
 <Workflow diagram: remote box on the left, local (laptop) box on the right, wire between them.>
-Remote: Raw data
-Wire: "download", remote → local (long)
-Local: Raw data, then [GIS: → (read) → Spatial layer → (process) → Processed layer → (render) → Image]
+<click> Remote: Raw data
+<click> Wire: "download", remote → local (long)
+Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click> → (process) → Processed layer <click> → (render) → Image]
 }}}
 
-## Web-based subsetting
+## Traditional mapping workflow: Challenges
+
+{{{
+<click> Data gets out of sync <<Raw data on remote != raw data on local. Represent this with colors and inequality sign. Indicate that the whole workflow needs to rerun.>>
+<click> Different time or place <<Show multiple data icons on remote for different years. Show only one of those locally. Indicate that the whole workflow needs to rerun.>>
+<click> Multiple sources <<Three different remotes. Download to 3 local copies; 3 local spatial layers. Come together on one processed layer and one image.>>
+}}}
+
+## We have more to map than ever
+
+{{{
+<click steps>
+- We have access to more data than ever
+    - NASA alone: 150 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
+    - State and local governments increasingly have their own public data catalogs
+    - Commercial data providers
+- Our problems are bigger and more complex than ever
+- We have more compute resources and capabilities than ever
+
+<Centered, bold> Stop making maps. Start making atlases.
+}}}
+
+# Remote access patterns
+
+<<section header slide>>
+
+## Subsetting at the source
 
 Some tools will preprocess data for you. E.g., Climate Engine.
 
@@ -89,6 +133,10 @@ You still download a file, but it's a much smaller file: just your area, just yo
 (The 12 MB vs 2 TB numbers on the slide are illustrative.)
 
 {{{
+<<
+Revise this to make it explicit that your computer sends the request *to* the remote server. Then, the remote server *sends back* the small 12 MB file.
+Also, indicate more clearly that "raw data" here is 2 TB, but the "subset.tif" is just 12 MB. 
+>>
 Remote: Raw data → (subset) → subset.tif
 Wire: download, remote → local, with a badge on the wire:
   download
@@ -99,7 +147,7 @@ Wire: download, remote → local, with a badge on the wire:
 Local: subset.tif, then [GIS: → (read) → Spatial layer → (render) → Image]
 }}}
 
-## Maps API
+## *Mapping* at the source
 
 Let someone else's computer draw the map for you.
 
@@ -339,6 +387,8 @@ This is running in this slide, in the browser: no tile server anywhere. The coun
 {{{
 Left: this JavaScript, word for word:
 
+<<This example seems to bleed earlier OpenStreetMap tiles for some reason (you can see them pop up before being overridden by the satellite view)>>
+
 ```ts
 import { Deck } from '@deck.gl/core'
 import { COGLayer } from '@developmentseed/deck.gl-geotiff'
@@ -364,6 +414,10 @@ Small note under the code: No server, no tiler: the browser reads, reprojects (U
 Right: the live map. The Sentinel-2 true-color COG on top of an OSM basemap, centered on Yale, zoom 11. Caption: "Sentinel-2 L2A (ESA / Copernicus, via AWS Open Data) · © OpenStreetMap contributors". A corner counter shows "N range requests · X MB of 292 MB (P%)".
 }}}
 
+# Making it fast
+
+<<section slide>>
+
 ## How remote reads work
 
 Basically: one request to "map" a file (read the metadata), then requests to read exactly the data you need.
@@ -374,6 +428,7 @@ Basically: one request to "map" a file (read the metadata), then requests to rea
 
 [click] Then the actual read grabs only the specific bytes needed: here, the one 1024 × 1024 tile containing Yale.
 
+<<Drop the zoomed-out view from here, and drop the overviews from the figure. Add this back in later on the Overviews slide.>>
 [click] Or, for a zoomed-out view, a tile of a small overview instead of the full-resolution data.
 
 Example:
@@ -415,6 +470,7 @@ Cloud optimized formats: Consolidate metadata; predictable formats for reading. 
 <click> <hand icon> If you're moving stuff between rooms, you can make lots of tiny trips carrying stuff by hand.
 <click> <car icon> If you're moving across town, you can make a few trips in a car.
 <click> <truck icon> If you're moving across the country, you have to pack everything once, neatly, into a truck.
+<<Add a little vertical space here. Everything can shift down.>>
 <click> In computers, the relevant limitations are **latency** and **bandwidth**.
 
 <click> <table; icon before each source name>
@@ -455,6 +511,65 @@ Row 2, Cloud-Optimized GeoTIFF. Segments: hdr + all IFDs + offsets · overviews 
 6. COG: one full-res tile · exactly the tile you need
 }}}
 
+## The cloud-optimized family
+
+STUB. Same ideas in each: consolidated metadata up front, data chunked so a reader can grab only what it needs.
+
+{{{
+| **Data** | **Cloud-optimized format** |
+|---|---|
+| Rasters | Cloud-Optimized GeoTIFF (COG) |
+| Multidimensional arrays / datacubes | Zarr (GeoZarr), Icechunk |
+| Vector (analysis) | GeoParquet |
+| Vector (streaming / display) | Mapbox Vector Tiles (MVT) <<right? confirm that this is appropriate>> |
+| Point clouds | COPC (Cloud-Optimized Point Cloud) |
+| Map tiles | PMTiles |
+| 3D data | 3D Tiles <<right? confirm that this is appropriate>> |
+}}}
+
+## Overviews
+
+{{{
+Pre-aggregate data at coarser zoom levels and store in the file.
+<<
+COG without overviews --- at low zoom (zoomed-out), need to read a *lot* of data.
+COG with overviews --- at low zoom, read the coarse version.
+Can re-use the earlier overviews animation sequence here.
+>>
+}}}
+
+## Bring the compute to the data
+
+STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
+
+{{{
+<click> <left> Download <<Animation: request for a download from local to S3; data blocks that are part of a big file moving from downloading a full file from an AWS S3 bucket to the local computer; then, very fast bouncing between the local file copy and the GIS to make the image.>>
+<click> <left> Remote access <right> <<Same animation, but requests/data bouncing back and forth over the network, to get the file metadata and then a few different pieces of the file to local cache.
+<click> <left> Compute near the data <right> <<similar animation, but now there's a tiler in the same region. Requests between the tiler and the storage are faster (but not as fast as local reads). Then, send just a small chunk (the final rendered tiles) to the local computer for the image). 
+
+*Understand and measure the performance characteristics of your workflow.*
+If your workflow is limited by data access (downloading, reading), putting compute next to the data is a good idea.
+If your workflow is limited by CPU/memory (processing), processing locally probably makes more sense.
+}}}
+
+## Cache
+
+Cloudfront, etc. Add an animation here.
+
+# Putting it all together: YCGS Bowerbird
+
+## Bowerbird: Our in-house remote sensing image viewer
+
+{{{
+<clickable screenshot of Bowerbird that links to the deployed version>
+}}}
+
+## How it works
+
+{{{
+<<Simplified architecture diagram of the app>>
+}}}
+
 # Coming next (draft)
 
 {{{
@@ -483,30 +598,6 @@ STUB. PMTiles ties the "Tiles API" and "How remote reads work" sections together
 - Tiles API + remote reads = no tile server to run
 }}}
 
-## The cloud-optimized family (stub)
-
-STUB. Same ideas in each: consolidated metadata up front, data chunked so a reader can grab only what it needs.
-
-{{{
-| Data | Cloud-optimized format |
-|---|---|
-| Rasters | Cloud-Optimized GeoTIFF (COG) |
-| Multidimensional arrays / datacubes | Zarr (GeoZarr) |
-| Vector (analysis) | GeoParquet |
-| Vector (streaming / display) | FlatGeobuf |
-| Point clouds | COPC (Cloud-Optimized Point Cloud) |
-| Map tiles | PMTiles |
-}}}
-
-## Bring the compute to the data (stub)
-
-STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
-
-{{{
-- So far: the data stayed remote, the computer was yours
-- Next: run the analysis *next to* the data (same cloud region): no downloads, much higher bandwidth
-- Notebooks / JupyterHub in the cloud, serverless functions, Dask clusters, …
-}}}
 
 <!--
 ==========================================================================
