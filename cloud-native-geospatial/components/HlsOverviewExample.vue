@@ -1,17 +1,17 @@
 <script setup lang="ts">
 /**
  * "One is an overview, one is full resolution": the same HLS scene (HLS.S30.T18TXL.2025276T154009.v2.0)
- * read at native resolution vs. from its 458² overview. Images and numbers come from
+ * read at native resolution vs. from its 915² overview. Images and numbers come from
  * scripts/hls_overview.py (bytes summed from the files' tile index, all three bands, 2026-11-11).
  * step 1: sizes under each image; 2: red box around downtown New Haven + zoomed insets.
  */
 withDefaults(defineProps<{ step?: number }>(), { step: 0 })
 
-// box_fraction printed by scripts/hls_overview.py (13 x 13 overview px = 104 x 104 native px, ~3.1 km)
-const box = { left: 0.6550, top: 0.2140, size: 0.0284 }
+// box_fraction printed by scripts/hls_overview.py (26 x 26 overview px = 104 x 104 native px, ~3.1 km)
+const box = { left: 0.6546, top: 0.2131, size: 0.0284 }
 const panels = [
   { img: 'hls-native.png', inset: 'hls-native-inset.png', caption: 'Native', detail: '48 MB; 3660 × 3660 px', insetNote: '30 m pixels' },
-  { img: 'hls-overview.png', inset: 'hls-overview-inset.png', caption: 'Overview', detail: '0.86 MB; 458 × 458 px', insetNote: '240 m pixels' },
+  { img: 'hls-overview.png', inset: 'hls-overview-inset.png', caption: 'Overview', detail: '3.3 MB; 915 × 915 px', insetNote: '120 m pixels' },
 ]
 const base = import.meta.env.BASE_URL
 </script>

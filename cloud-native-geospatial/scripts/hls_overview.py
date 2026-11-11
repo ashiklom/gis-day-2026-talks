@@ -6,10 +6,12 @@ Scene: HLS.S30.T18TXL.2025276T154009.v2.0 (2025-10-03, 0% cloud), from Microsoft
 Computer (anonymous SAS token). True color = B04 / B03 / B02, each a 3660 x 3660 (30 m) Int16 COG
 with internal overviews 1830, 915, 458, 229.
 
-- hls-native.png:   the whole scene read at native resolution, averaged down to 458 x 458
-- hls-overview.png: the whole scene read from the 458 x 458 overview (240 m)
+- hls-native.png:   the whole scene read at native resolution, averaged down to 915 x 915
+- hls-overview.png: the whole scene read from the 915 x 915 overview (120 m)
 - hls-*-inset.png:  the same ~3 km box around downtown New Haven / Yale from each
-                    (104 x 104 native pixels vs 13 x 13 overview pixels)
+                    (104 x 104 native pixels vs 26 x 26 overview pixels)
+(The 458 overview was too coarse: HLS's nearest-neighbour overviews look visibly speckled
+next to the native image at slide size. 915 is still an overview and still reads ~1/16 of the bytes.)
 Byte counts are summed from each file's tile index (TIFF BLOCK_SIZE_x_y), all three bands.
 Needs GDAL with Python bindings and numpy.
 """
@@ -25,7 +27,7 @@ gdal.SetConfigOption('GDAL_DISABLE_READDIR_ON_OPEN', 'EMPTY_DIR')
 ITEM = 'HLS.S30.T18TXL.2025276T154009.v2.0'
 BASE = f'https://hls2euwest.blob.core.windows.net/hls2/S30/18/T/XL/2025/10/03/{ITEM}/{ITEM}'
 BANDS = ['B04', 'B03', 'B02']
-OVR = 2                          # overview index: 0 = 1830, 1 = 915, 2 = 458
+OVR = 1                          # overview index: 0 = 1830, 1 = 915, 2 = 458
 CENTER = (-72.9279, 41.3083)     # Yale Old Campus / New Haven Green
 STRETCH = (0, 1300)              # reflectance x 1e4 -> 0..255
 OUT = 'public'
@@ -71,7 +73,7 @@ for b in BANDS:
 
 size = native[0].shape[0]
 osize = overview[0].shape[0]
-f = size / osize  # 3660 / 458 = 7.99
+f = size / osize  # 3660 / 915 = 4
 
 
 def average_down(a):
@@ -88,13 +90,13 @@ small = [average_down(a) for a in native]
 write_png(f'{OUT}/hls-native.png', [to_byte(a) for a in small])
 write_png(f'{OUT}/hls-overview.png', [to_byte(a) for a in overview])
 
-# the inset box: 13 x 13 overview pixels = 104 x 104 native pixels (~3.1 km)
+# the inset box: K x K overview pixels = 104 x 104 native pixels (~3.1 km)
 from osgeo import osr
 src = osr.SpatialReference(); src.ImportFromEPSG(4326); src.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 dst = osr.SpatialReference(wkt=wkt)
 x, y, _ = osr.CoordinateTransformation(src, dst).TransformPoint(*CENTER)
 col, row = (x - gt[0]) / gt[1], (y - gt[3]) / gt[5]
-K = 13
+K = round(104 / f)  # 26 at the 915 overview
 oc, orow = int(col / f) - K // 2, int(row / f) - K // 2
 n0c, n1c, n0r, n1r = (round(v * f) for v in (oc, oc + K, orow, orow + K))
 write_png(f'{OUT}/hls-overview-inset.png', [to_byte(a[orow:orow + K, oc:oc + K]) for a in overview])
