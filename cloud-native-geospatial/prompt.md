@@ -25,6 +25,8 @@ Conventions:
 - Text inside <<double angle brackes>> are even more general instructions. These should first be updated to more precise <single-bracked instructions> and any other changes needed to follow the conventions above. Make these changes first and ask me to review; if approved, then commit separately proceed with rendering the rest of the deck.
 -->
 
+<< General comment: Local and remote are inconsistently placed here; sometimes on the right, other times on the left. Pick a direction and use it consistently, unless there's a specific reason to use a different layout.>>
+
 # (Title Slide)
 
 {{{
@@ -42,9 +44,10 @@ November 16, 2026 · Yale GIS Day 2026
 ## Outline
 
 {{{
+<< Remove the box around this. Just the text. >>
 <click steps>
 (1) Traditional mapping workflow and its limitations
-(2) Mapping without (local copies of) the data: Remote access patterns
+(2) Mapping without the data: Remote access patterns
 (3) Making it fast
 (4) Putting it all together: YCGS Bowerbird
 }}}
@@ -99,6 +102,7 @@ Problems:
 <Workflow diagram: remote box on the left, local (laptop) box on the right, wire between them.>
 <click> Remote: Raw data
 <click> Wire: "download", remote → local (long)
+<< "Your computer" box should be its full size the entire time. Right now, it's small during the first two clicks and suddenly gets bigger >>
 Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click> → (process) → Processed layer <click> → (render) → Image]
 }}}
 
@@ -111,6 +115,7 @@ Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click>
   <Every local stage after Raw data outlined red, with <rerun icon> "re-run everything".>
 <click> Different time or place
   <Remote: a stack of four Raw data icons labelled 2021, 2022, 2023, 2024. Local: only "2024".>
+  << 2021 arrow should come below the "download 2024" >>
   <A ghosted "2021?" request on the wire; local chain outlined red with <rerun icon> "download again, re-run everything".>
 <click> Multiple sources
   <Three small remote boxes stacked (Source A, B, C), each with Raw data and its own download wire.>
@@ -121,6 +126,7 @@ Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click>
 
 {{{
 <click> - We have access to more data than ever
+<< Sub-bullets should be smaller than main bullets >>
 <click>     - NASA alone: >180 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
 <click>     - State and local governments increasingly have their own public data catalogs
 <click>     - Commercial data providers
@@ -233,6 +239,11 @@ Wire 1, local → remote: "GET /{z}/{x}/{y}.png  (× many)"
 Wire 2, remote → local: "256 × 256 PNG tiles"
 Local: Tiles → (stitch) → Map
 
+<<Below, rather than changing the same URL, show 3 URLs, each appearing after the click, and the annotation is to the left:
+zoom level (z) and map position x, y . {z}/{x}/{y}
+New Haven, East Haven, and Branford . 11/609/765
+Zoom in on New Haven, x, y roughly double . 12/1218/1530
+
 Below the diagram, a large monospace URL, with z, x and y each in its own color:
 https://tile.openstreetmap.org/{z}/{x}/{y}.png
 plus a one-line note under it that changes with each step.
@@ -298,6 +309,7 @@ You don't have to write this from scratch: TiTiler / rio-tiler (Development Seed
 {{{
 Left: this Python pseudocode, word for word:
 
+<<Disable font ligatures>>
 ```python
 # GET https://mytiler.org/{dataset}/{time}/{z}/{x}/{y}.png
 @app.get("/{dataset}/{time}/{z}/{x}/{y}.png")
@@ -332,7 +344,10 @@ Right: annotations, each with an icon, that appear as the code highlights move.
 1. Highlight the three "read" lines (rasterio.open / xarray.open_zarr / pandas.read_csv). Show: <raw-data icon> Read from different sources
 2. Highlight the process/render lines in each branch. Show: <processed-layer icon> Process + render using different libraries
 3. Highlight the `return Response(…)` block. Show: <image icon> End result is always a PNG with headers, regardless of source
-   Also show, small: In practice: **TiTiler**, **rio-tiler**, **titiler-xarray**, …
+   Also show, small: In practice, adapt an existing tiler, such as:
+   - **TiTiler**
+   - **rio-tiler**
+   - **titiler-xarray**
 }}}
 
 ## Access globally, render locally
@@ -357,8 +372,10 @@ State 1: a box titled "<laptop icon> your laptop" containing:
 
 ```bash
 export CPL_VSIL_SHOW_NETWORK_STATS=YES   # ask GDAL to count bytes
+
 S2=https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/\
 sentinel-2-c1-l2a/18/T/XL/2025/8/S2B_T18TXL_20250804T154608_L2A/TCI.tif
+
 gdalinfo /vsicurl/$S2
 # Size is 10980, 10980
 # Coordinate System is: WGS 84 / UTM zone 18N    Pixel Size = (10, -10)
@@ -505,7 +522,7 @@ A regular GeoTIFF is perfectly fine on a local disk, where seeking is cheap.
 Two rows, each a file drawn as a horizontal strip of segments, with a running "N round trips" counter (it reads "→ pixels!" when the row's last trip is done). Each trip highlights its segment and shows a short label.
 
 Row 1, Regular GeoTIFF. Segments: hdr (small) · pixel data: full-width strips, no overviews (most of the file, 16 strips) · IFD · strip offsets
-Row 2, Cloud-Optimized GeoTIFF. Segments: hdr + all IFDs + offsets · overviews (5 parts) · full-res tiles (24 tiles)
+Row 2, Cloud-Optimized GeoTIFF. Segments: hdr + all IFDs + offsets · overviews (5 parts) · full-res tiles (24 tiles) <<appears on click #5 below>>
 
 <click steps>
 1. Regular: hdr · header → "IFD is at the end"
@@ -542,8 +559,8 @@ STUB. Same ideas in each: consolidated metadata up front, data chunked so a read
 Pre-aggregate data at coarser zoom levels and store in the file.
 
 <Two rows, each in the "How remote reads work" layout (laptop · request line + arrow · storage + cloud), with its file strip below. GDAL writes the smallest overview first.>
-Row 1, COG without overviews. Strip: header · 10980² full resolution (121 tiles)
-Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 2745² (36) · 5490² (121) · 10980² full resolution (121)
+Row 1, without overviews <<left side, not the right>>. Strip: header · 10980² full resolution (121 tiles)
+Row 2, with overviews <<left side, not right>>. Strip: header · 687² (4 tiles) · 1373² (9) · 2745² (36) · 5490² (121) · 10980² full resolution (121)
 <Overview tiles are 512 × 512; full-resolution tiles are 1024 × 1024.>
 
 <click steps> (row · request · arrow note · what lights up)
@@ -551,6 +568,19 @@ Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 274
 2. With: header + 4 tiles · "show me the whole scene": 0.8 MB <captured> · the four 687² overview tiles
 
 <captured> Tile sizes read from TCI.tif's tile index with GDAL 3.13.3 on 2026-11-11: 121 full-resolution tiles = 219,981,531 bytes; 4 tiles of the 687² overview = 819,517 bytes.
+}}}
+
+### Example: HLS
+
+{{{
+<Centered> **One is an overview, one is full resolution. Can you tell which is which?**
+<<
+Side by side: HLS scene of New Haven --- left one rendered at native resolution, right one from the appropriate overview.
+<On click>:
+<Text below images>:
+Native (XX MB; X x y pixels)      Overview (XX MB; X x y)
+Also, draw a small red box over a small area of each zoomed-out image and show the native resolution vs. coarser overview resolution. 
+>>
 }}}
 
 ## Bring the compute to the data
@@ -584,7 +614,7 @@ Remote: Raw data → (read) → Spatial layer → (process) → Processed layer 
 2. The remote pipeline stages light up in turn, ending at Tiles.
 3. A file `landcover-12-1218-1530.png` drops onto the cache shelf; the tile goes back over the wire; Local: Image.
 4. Wire local → remote again: the same `GET /landcover/12/1218/1530.png`
-5. The pipeline stays dim, marked "skipped"; the cached file lights up and goes straight back. Note: "cache hit: no read, no process, no render".
+5. The pipeline stays dim, marked "skipped"; the cached file lights up and goes straight back. Note: "cache hit: no read, no process, no render". <<Cache hits are good. Make this dark green, not red. Do this below, too. Also, there are two slightly overlapping lines above "Skipped", one long, one short; should only be one. >>
 }}}
 
 ### Many ways to cache
@@ -594,6 +624,7 @@ Remote: Raw data → (read) → Spatial layer → (process) → Processed layer 
 <click> API server
   <The step-5 diagram from the previous slide, scaled down to fit the row.>
 <click> Web browser
+  <<Move the web browser all the way to the right. Put its cache box below, like the remote server.>>
   <The cache sits inside Your computer, next to the Web browser. The repeat request for the same URL never leaves the laptop: browser → its cache → Image; the wire stays idle. Small tag: `Cache-Control: max-age=86400`.>
 <click> CDN <cloudflare logo> Cloudflare <cloudfront logo> CloudFront
   <A CDN node <cdn icon> sits on the wire between laptop and server. Two labelled paths: "hit" = CDN cache → laptop; "miss" = CDN → server → CDN stores a copy → laptop.>
@@ -612,12 +643,18 @@ https://d3eu3eflreofpm.cloudfront.net/
 
 {{{
 <Architecture diagram in the deck's remote/local framing. Right: Your computer → Web browser running Bowerbird (deck.gl). Left: three remote groups, each with its own wire into the browser.>
-<click> Existing tile services <small: OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA VEDA>
-  <Remote: … → (render) → Tiles · wire: GET /{z}/{x}/{y}.png · Local: Tiles → (stitch) → Map>
-<click> Our tiler <small: TiTiler on AWS Lambda>, deployed next to the data in 3 regions
-  <Three region boxes: us-west-2 → NASA Earthdata · us-east-1 → NOAA GOES · eu-central-1 → ECMWF ERA5 (Zarr). Each: Raw data → (read) → (process) → (render) → Tiles.>
 <click> Local rendering
   <COGs on S3 → range requests → in the browser, deck.gl-raster reads and renders on the GPU → Image.>
+<click> Existing tile services <small: OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA>
+  << Ellipsis here should not be in the text above the arrow? >>
+  <Remote: … → (render) → Tiles · wire: GET /{z}/{x}/{y}.png · Local: Tiles → (stitch) → Map>
+<click> Our tiler <small: TiTiler on AWS Lambda>, deployed next to the data in 3 regions
+  <<
+  Combine this and the Cloudfront bullet in one click.
+  Single pair of arrows from local to Cloudfront.
+  Arrange multi-region tilers as three boxes on top of each other -- one for each region to make it clearer there are three deployments.
+  >>
+  <Three region boxes: us-west-2 → NASA Earthdata · us-east-1 → NOAA GOES · eu-central-1 → ECMWF ERA5 (Zarr). Each: Raw data → (read) → (process) → (render) → Tiles.>
 <click> CloudFront <cdn icon> on the tiler's wire, with a cache: "repeat tiles never reach Lambda"
 }}}
 
