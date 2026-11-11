@@ -12,6 +12,9 @@ const showGrid = ref(true)
 const offline = ref(false)
 let map: L.Map | undefined
 let grid: L.GridLayer | undefined
+// Slidev mounts slides ahead of time while they're hidden, so Leaflet first measures a 0 × 0 map and
+// requests almost no tiles. Re-measure whenever the container's real size changes (e.g. the slide is shown).
+let resizer: ResizeObserver | undefined
 
 /** A GridLayer whose "tiles" are just outlined boxes labelled with their own {x, y, z} */
 const TileIdLayer = L.GridLayer.extend({
@@ -40,6 +43,11 @@ onMounted(() => {
     .addTo(map)
   grid = new (TileIdLayer as any)({ tileSize: 256 })
   grid!.addTo(map)
+  resizer = new ResizeObserver(() => {
+    if (el.value && el.value.clientWidth > 0)
+      map?.invalidateSize({ animate: false }) // keeps Yale centred
+  })
+  resizer.observe(el.value!)
 })
 
 watch(showGrid, (on) => {
@@ -51,7 +59,10 @@ watch(showGrid, (on) => {
     grid.remove()
 })
 
-onBeforeUnmount(() => map?.remove())
+onBeforeUnmount(() => {
+  resizer?.disconnect()
+  map?.remove()
+})
 </script>
 
 <template>
