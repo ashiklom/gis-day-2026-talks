@@ -51,7 +51,9 @@ November 16, 2026 · Yale GIS Day 2026
 
 # Traditional mapping workflow and its limitations
 
-<<Section header slide>>
+{{{
+<Section divider slide, title only.>
+}}}
 
 ## How to make a map
 
@@ -66,18 +68,20 @@ The goal of this talk is to show you that there is tremendous flexibility in how
 <Pipeline diagram, large icons:>
 <click> Raw data <click> → (read) → Spatial layer <click> → (process) → Processed layer <click> → (render) → Image
 
-<click> <Left, middle aligned with diagram, bigger> Geographer's toolbox
+<Left, middle aligned with diagram, bigger> Geographer's toolbox <appears on click 5, below>
 
-<Network diagram:>
-<<Grouped conceptually with/under your computer, put "GIS" and "Web Browser" and their icons. Save these for reuse later. The entire local computer "box" should be connected to the Internet hub.>>
-<<Animation sequence: <click> Computer <click> GIS + Web browser <click> network diagram >>
-<<Make sure "Internet" + icon are properly centered inside their hub circle. Make each spoke of the hub the same length, so the diagram is symmerical>>
-Your computer <laptop>, connected by a dashed line to a central "Internet" hub <internet icon>.
+<Network diagram. Four solid spokes from the hub, all the same length, mirror-symmetric (nodes at the four corners of a square around the hub). "Internet" icon + label centered inside the hub circle.>
+Left: a "Your computer" box <laptop icon in its header> containing two nodes side by side: "GIS" <gis icon> and "Web browser" <browser icon>. The whole box connects to the central "Internet" hub <internet icon> with a dashed line. <Shared component (LocalComputerBox), reused by later diagrams.>
 The hub links to four nodes:
 - Institutional server <server>
 - FTP / remote storage <storage>
 - Cloud compute <server + cloud badge>
 - Cloud storage <storage + cloud badge>
+
+<click steps> (continuing after the 4 pipeline clicks above)
+5. "Geographer's toolbox" label + the empty "Your computer" box
+6. GIS + Web browser appear inside the box
+7. Dashed link, Internet hub, spokes and the four nodes
 }}}
 
 ## Traditional mapping workflow
@@ -101,28 +105,36 @@ Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click>
 ## Traditional mapping workflow: Challenges
 
 {{{
-<click> Data gets out of sync <<Raw data on remote != raw data on local. Represent this with colors and inequality sign. Indicate that the whole workflow needs to rerun.>>
-<click> Different time or place <<Show multiple data icons on remote for different years. Show only one of those locally. Indicate that the whole workflow needs to rerun.>>
-<click> Multiple sources <<Three different remotes. Download to 3 local copies; 3 local spatial layers. Come together on one processed layer and one image.>>
+<Left: the three challenge labels, each appearing on its click; the current one bold, earlier ones greyed. Right: a compact traditional-workflow diagram (Remote box · download wire · Your computer box with Raw data → [GIS: Spatial layer → Processed layer → Image]) that switches with each click.>
+<click> Data gets out of sync
+  <Remote Raw data tinted blue, labelled "v2"; local Raw data tinted orange, labelled "v1"; a large red "≠" between them.>
+  <Every local stage after Raw data outlined red, with <rerun icon> "re-run everything".>
+<click> Different time or place
+  <Remote: a stack of four Raw data icons labelled 2021, 2022, 2023, 2024. Local: only "2024".>
+  <A ghosted "2021?" request on the wire; local chain outlined red with <rerun icon> "download again, re-run everything".>
+<click> Multiple sources
+  <Three small remote boxes stacked (Source A, B, C), each with Raw data and its own download wire.>
+  <Local: three Raw data → (read) → three Spatial layers, converging → (process) → one Processed layer → (render) → one Image.>
 }}}
 
 ## We have more to map than ever
 
 {{{
-<click steps>
-- We have access to more data than ever
-    - NASA alone: 150 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
-    - State and local governments increasingly have their own public data catalogs
-    - Commercial data providers
-- Our problems are bigger and more complex than ever
-- We have more compute resources and capabilities than ever
+<click> - We have access to more data than ever
+<click>     - NASA alone: >180 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
+<click>     - State and local governments increasingly have their own public data catalogs
+<click>     - Commercial data providers
+<click> - Our problems are bigger and more complex than ever
+<click> - We have more compute resources and capabilities than ever
 
-<Centered, bold> Stop making maps. Start making atlases.
+<click> <Centered, bold> Stop making maps. Start making atlases.
 }}}
 
 # Remote access patterns
 
-<<section header slide>>
+{{{
+<Section divider slide, title only.>
+}}}
 
 ## Subsetting at the source
 
@@ -133,17 +145,14 @@ You still download a file, but it's a much smaller file: just your area, just yo
 (The 12 MB vs 2 TB numbers on the slide are illustrative.)
 
 {{{
-<<
-Revise this to make it explicit that your computer sends the request *to* the remote server. Then, the remote server *sends back* the small 12 MB file.
-Also, indicate more clearly that "raw data" here is 2 TB, but the "subset.tif" is just 12 MB. 
->>
-Remote: Raw data → (subset) → subset.tif
-Wire: download, remote → local, with a badge on the wire:
-  download
+<Same two-wire layout as "Mapping at the source".>
+Remote: Raw data <size tag: 2 TB> → (subset) → subset.tif <size tag: 12 MB>
+Wire 1, local → remote, carrying a request badge:
+  <request icon> request
   <gis icon> New Haven only
   <calendar icon> 2020–2024
   <layer icon> 3 of 40 variables
-  `12 MB, not 2 TB` <monospace>
+Wire 2, remote → local: "subset.tif" and `12 MB` <monospace>
 Local: subset.tif, then [GIS: → (read) → Spatial layer → (render) → Image]
 }}}
 
@@ -387,8 +396,6 @@ This is running in this slide, in the browser: no tile server anywhere. The coun
 {{{
 Left: this JavaScript, word for word:
 
-<<This example seems to bleed earlier OpenStreetMap tiles for some reason (you can see them pop up before being overridden by the satellite view)>>
-
 ```ts
 import { Deck } from '@deck.gl/core'
 import { COGLayer } from '@developmentseed/deck.gl-geotiff'
@@ -411,12 +418,14 @@ new Deck({
 ```
 Small note under the code: No server, no tiler: the browser reads, reprojects (UTM → Web Mercator, on the GPU) and renders.
 
-Right: the live map. The Sentinel-2 true-color COG on top of an OSM basemap, centered on Yale, zoom 11. Caption: "Sentinel-2 L2A (ESA / Copernicus, via AWS Open Data) · © OpenStreetMap contributors". A corner counter shows "N range requests · X MB of 292 MB (P%)".
+Right: the live map. The Sentinel-2 true-color COG only (no basemap, exactly the code on the left), centered on Yale, zoom 11. Caption: "Sentinel-2 L2A (ESA / Copernicus, via AWS Open Data)". A corner counter shows "N range requests · X MB of 292 MB (P%)".
 }}}
 
 # Making it fast
 
-<<section slide>>
+{{{
+<Section divider slide, title only.>
+}}}
 
 ## How remote reads work
 
@@ -424,12 +433,9 @@ Basically: one request to "map" a file (read the metadata), then requests to rea
 
 [click] "Opening" a file: the local computer retrieves just the metadata header over the internet: one request, 16 KB.
 
-[click] The header describes the data and shows where every chunk lives: size, CRS, tile size, overviews, and a table of byte offsets for all 171 tiles.
+[click] The header describes the data and shows where every chunk lives: size, CRS, tile size, overviews, and a table of byte offsets for every tile.
 
 [click] Then the actual read grabs only the specific bytes needed: here, the one 1024 × 1024 tile containing Yale.
-
-<<Drop the zoomed-out view from here, and drop the overviews from the figure. Add this back in later on the Overviews slide.>>
-[click] Or, for a zoomed-out view, a tile of a small overview instead of the full-resolution data.
 
 Example:
 - Why gdalinfo can be fast even for huge files.
@@ -437,8 +443,8 @@ Example:
 
 {{{
 Top row: <laptop icon> "GDAL / QGIS / browser" on the left. <storage + cloud icon> "TCI.tif (292 MB)" on the right. Between them, the current HTTP request in monospace above a dashed arrow with a short note.
-Middle: the file drawn as a horizontal strip of segments, each a block of tiles (GDAL writes the smallest overview first):
-  header · 687² (1 tile) · 1373² (4) · 2745² (9) · 5490² (36) · 10980² full resolution (121)
+Middle: the file drawn as a horizontal strip of segments, each a block of tiles <overviews not drawn here; they come in on the Overviews slide>:
+  header · 10980² full resolution (121 tiles)
   Axis label: byte 0 → → → byte 291,914,733 (not to scale)
 
 <click steps> (request · arrow note · what lights up)
@@ -448,9 +454,8 @@ Middle: the file drawn as a horizontal strip of segments, each a block of tiles 
      CRS        WGS 84 / UTM zone 18N, 10 m pixels
      tiles      1024 × 1024, DEFLATE
      overviews  5490², 2745², 1373², 687²
-     index      byte offset + length of all 171 tiles
+     index      byte offset + length of every tile
 3. GET Range: bytes=127074304-129335295 · "read Yale at 10 m": 2.3 MB · one full-resolution tile
-4. GET Range: one tile of the 687² overview · "show me the whole scene": ~1 tile · the single 687² overview tile
 }}}
 
 ## Cloud optimization: Helping remote readers
@@ -470,7 +475,7 @@ Cloud optimized formats: Consolidate metadata; predictable formats for reading. 
 <click> <hand icon> If you're moving stuff between rooms, you can make lots of tiny trips carrying stuff by hand.
 <click> <car icon> If you're moving across town, you can make a few trips in a car.
 <click> <truck icon> If you're moving across the country, you have to pack everything once, neatly, into a truck.
-<<Add a little vertical space here. Everything can shift down.>>
+<~1 line of extra vertical space here; everything below shifts down>
 <click> In computers, the relevant limitations are **latency** and **bandwidth**.
 
 <click> <table; icon before each source name>
@@ -521,21 +526,28 @@ STUB. Same ideas in each: consolidated metadata up front, data chunked so a read
 | Rasters | Cloud-Optimized GeoTIFF (COG) |
 | Multidimensional arrays / datacubes | Zarr (GeoZarr), Icechunk |
 | Vector (analysis) | GeoParquet |
-| Vector (streaming / display) | Mapbox Vector Tiles (MVT) <<right? confirm that this is appropriate>> |
+| Vector (streaming / display) | FlatGeobuf |
 | Point clouds | COPC (Cloud-Optimized Point Cloud) |
-| Map tiles | PMTiles |
-| 3D data | 3D Tiles <<right? confirm that this is appropriate>> |
+| Map tiles (raster or vector, e.g. MVT) | PMTiles |
+| 3D models (buildings, meshes) | 3D Tiles (OGC) |
 }}}
 
 ## Overviews
 
+[click] Without overviews, a zoomed-out view has to read every full-resolution tile.
+
+[click] With overviews, a zoomed-out view reads a tile of a small overview instead of the full-resolution data.
+
 {{{
 Pre-aggregate data at coarser zoom levels and store in the file.
-<<
-COG without overviews --- at low zoom (zoomed-out), need to read a *lot* of data.
-COG with overviews --- at low zoom, read the coarse version.
-Can re-use the earlier overviews animation sequence here.
->>
+
+<Two rows, each in the "How remote reads work" layout (laptop · request line + arrow · storage + cloud), with its file strip below. GDAL writes the smallest overview first.>
+Row 1, COG without overviews. Strip: header · 10980² full resolution (121 tiles)
+Row 2, COG with overviews. Strip: header · 687² (1 tile) · 1373² (4) · 2745² (9) · 5490² (36) · 10980² full resolution (121)
+
+<click steps> (row · request · arrow note · what lights up)
+1. Without: header + every full-resolution tile · "show me the whole scene": <captured: total MB of the 121 full-res tiles> · all 121 tiles
+2. With: header + one tile · "show me the whole scene": <captured: size of the single 687² tile> · the single 687² overview tile
 }}}
 
 ## Bring the compute to the data
@@ -543,11 +555,15 @@ Can re-use the earlier overviews animation sequence here.
 STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
 
 {{{
-<click> <left> Download <<Animation: request for a download from local to S3; data blocks that are part of a big file moving from downloading a full file from an AWS S3 bucket to the local computer; then, very fast bouncing between the local file copy and the GIS to make the image.>>
-<click> <left> Remote access <right> <<Same animation, but requests/data bouncing back and forth over the network, to get the file metadata and then a few different pieces of the file to local cache.
-<click> <left> Compute near the data <right> <<similar animation, but now there's a tiler in the same region. Requests between the tiler and the storage are faster (but not as fast as local reads). Then, send just a small chunk (the final rendered tiles) to the local computer for the image). 
+<Three rows, each appearing on its click: label on the left, a looping animation on the right. Shared layout: Your computer (LocalComputerBox with GIS) on the left; <storage + cloud> "S3 bucket, us-west-2" on the right; internet wire between. Data = small colored blocks; travel time shows latency (slow over the internet, medium within the region, near-instant inside the computer).>
+<click> Download
+  <Request → S3; all of the file's blocks stream slowly to the laptop, forming a local copy; then very fast bounces between the local copy and GIS → Image.>
+<click> Remote access
+  <Header request/response, then a few back-and-forth trips, each fetching one block into a local cache → GIS → Image.>
+<click> Compute near the data
+  <A tiler <compute + cloud badge> sits next to the bucket inside a "us-west-2" region box. Laptop → tiler: tile request. Tiler ↔ S3: quick bounces (header, then a few blocks), faster than the internet but slower than local reads. Tiler → laptop: one small rendered tile → Image.>
 
-*Understand and measure the performance characteristics of your workflow.*
+<click> *Understand and measure the performance characteristics of your workflow.*
 If your workflow is limited by data access (downloading, reading) or storage, putting compute next to the data is a good idea.
 If your workflow is limited by CPU/memory (processing), processing locally probably makes more sense.
 }}}
@@ -557,46 +573,56 @@ If your workflow is limited by CPU/memory (processing), processing locally proba
 Cloudfront, etc.
 
 {{{
-<<diagram with icons:
-<click> Local computer sends request to remote for a tile (dataset, z, x, y).
-<click> Remote steps through the mapping process (read, process) to make a tile.
-<click> Remote saves a copy of the tile with a filename that matches the dataset-z-x-y pattern.
-<click> Local computer sends another request for the same tile (dataset, z, x, y).
-<click> Remote skips all the processing and just sends the existing image.
+<Same layout as the Maps/Tiles API diagrams: Remote server (left) · wire · Your computer (right). Inside the remote box, under the pipeline, a "cache" shelf <cache icon>, empty at first.>
+Remote: Raw data → (read) → Spatial layer → (process) → Processed layer → (render) → Tiles
+
+<click steps>
+1. Wire local → remote: `GET /landcover/12/1218/1530.png`
+2. The remote pipeline stages light up in turn, ending at Tiles.
+3. A file `landcover-12-1218-1530.png` drops onto the cache shelf; the tile goes back over the wire; Local: Image.
+4. Wire local → remote again: the same `GET /landcover/12/1218/1530.png`
+5. The pipeline stays dim, marked "skipped"; the cached file lights up and goes straight back. Note: "cache hit: no read, no process, no render".
 }}}
 
 ### Many ways to cache
 
 {{{
-<click> <left> API server <right> <<same diagram as above, maybe a bit smaller to fit in the row>>
-<click> <left> Web browser <right> <<similar diagram that shows that the browser detects a duplicate URL request and pulls the image from its local storage>>
-<click> <left> CDN <cloudflare icon with the word cloudflare; AWS cloudfront icon with the word cloudfront> <<similar diagram but with the CDN in the middle: Laptop sends request to CDN. CDN either pulls from its own cache or forwards the request to the server and then caches the result>>.
+<Three compact rows, label on the left, diagram on the right, each showing the repeat request (the cache hit).>
+<click> API server
+  <The step-5 diagram from the previous slide, scaled down to fit the row.>
+<click> Web browser
+  <The cache sits inside Your computer, next to the Web browser. The repeat request for the same URL never leaves the laptop: browser → its cache → Image; the wire stays idle. Small tag: `Cache-Control: max-age=86400`.>
+<click> CDN <cloudflare logo> Cloudflare <cloudfront logo> CloudFront
+  <A CDN node <cdn icon> sits on the wire between laptop and server. Two labelled paths: "hit" = CDN cache → laptop; "miss" = CDN → server → CDN stores a copy → laptop.>
 }}}
 
 # Putting it all together: YCGS Bowerbird
 
 {{{
-<<section header slide, but also include a screenshot of Bowerbird, a clickable URL, and a QR code for the URL>>
+<Section divider slide. Left: title, then the URL below as a clickable link, and a QR code for it. Right: screenshot of Bowerbird's default view, captured from the live site.>
+https://d3eu3eflreofpm.cloudfront.net/
 }}}
 
 ## How it works
 
+17 datasets, 44 products, from 7.6 cm aerial photos to a 9 km soil-moisture model.
+
 {{{
-<<
-Simplified architecture diagram of the app, framed in the same framework used elsewhere in the deck.
-Highlights:
-- Pulls from some existing tiles endpoints.
-- Our own tiler, deployed in multiple regions to be next to the data, and pulling from several different sources
-- deckgl-raster does some of its own local rendering
-- CDN cache of the images
->>
+<Architecture diagram in the deck's remote/local framing. Right: Your computer → Web browser running Bowerbird (deck.gl). Left: three remote groups, each with its own wire into the browser.>
+<click> Existing tile services <small: OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA VEDA>
+  <Remote: … → (render) → Tiles · wire: GET /{z}/{x}/{y}.png · Local: Tiles → (stitch) → Map>
+<click> Our tiler <small: TiTiler on AWS Lambda>, deployed next to the data in 3 regions
+  <Three region boxes: us-west-2 → NASA Earthdata · us-east-1 → NOAA GOES · eu-central-1 → ECMWF ERA5 (Zarr). Each: Raw data → (read) → (process) → (render) → Tiles.>
+<click> Local rendering
+  <COGs on S3 → range requests → in the browser, deck.gl-raster reads and renders on the GPU → Image.>
+<click> CloudFront <cdn icon> on the tiler's wire, with a cache: "repeat tiles never reach Lambda"
 }}}
 
 # Other topics (draft)
 
 {{{
 <Section divider slide.>
-Coming next (draft)
+Other topics (draft)
 Placeholder slides for sections not yet written
 }}}
 
