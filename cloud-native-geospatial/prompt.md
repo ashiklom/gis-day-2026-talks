@@ -38,13 +38,17 @@ Research Software Engineer, Yale Center for Geospatial Solutions
 
 November 16, 2026 · Yale GIS Day 2026
 
-<Cover layout, left-aligned. Small row of icons above the title: cloud, internet, laptop.>
+<byte strip: TCI.tif as a thin bar, the 4 ranges fetched for the background image in red> This image: 23.5 MB of a 292 MB Sentinel-2 file, read over the internet
+<small, bottom right> Sentinel-2 L2A, 4 August 2025 (ESA / Copernicus, via AWS Open Data)
+
+<Full-bleed background: public/cover-new-haven.jpg, a 2560 × 1440 true-color crop of Greater New Haven read from TCI.tif with GDAL (see Shared resources). Dark gradient from the left; all text white, bottom-left, title in the serif on one line.>
+<captured> The 23.5 MB and the 4 byte ranges are GDAL's network statistics for that crop.
 }}}
 
 ## Outline
 
 {{{
-<Plain text, no border or box.>
+<The four sections as a row of four columns, each with a Yale-blue bar on top, a number, and the title (SectionTrack, large). Numbers are drawn without parentheses. The section dividers repeat this track.>
 <click steps>
 (1) Traditional mapping workflow and its limitations
 (2) Mapping without the data: Remote access patterns
@@ -55,7 +59,7 @@ November 16, 2026 · Yale GIS Day 2026
 # Traditional mapping workflow and its limitations
 
 {{{
-<Section divider slide, title only.>
+<Section divider slide: title left-aligned in the serif; the four-section track along the bottom with this section filled.>
 }}}
 
 ## How to make a map
@@ -125,21 +129,21 @@ Local: Raw data, then [<click> GIS: <click> → (read) → Spatial layer <click>
 ## We have more to map than ever
 
 {{{
+<No bullet markers; left-aligned. The three sub-items sit side by side in three columns under their lead line, smaller and grey; the NASA figure (up to "2 billion files,") is set large in the serif.>
 <click> - We have access to more data than ever
-<Sub-bullets in a smaller font than main bullets (about 80%).>
 <click>     - NASA alone: >180 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
 <click>     - State and local governments increasingly have their own public data catalogs
 <click>     - Commercial data providers
 <click> - Our problems are bigger and more complex than ever
 <click> - We have more compute resources and capabilities than ever
 
-<click> <Centered, bold> Stop making maps. Start making atlases.
+<click> <Left-aligned, large, in the serif> Stop making maps. Start making atlases.
 }}}
 
 # Remote access patterns
 
 {{{
-<Section divider slide, title only.>
+<Section divider slide: title left-aligned in the serif; the four-section track along the bottom with this section filled.>
 }}}
 
 ## Subsetting at the source
@@ -162,7 +166,7 @@ Wire 2, remote → local: "subset.tif" and `12 MB` <monospace>
 Local: subset.tif, then [GIS: → (read) → Spatial layer → (render) → Image]
 }}}
 
-## *Mapping* at the source
+## Mapping at the source
 
 Let someone else's computer draw the map for you.
 
@@ -357,7 +361,7 @@ You can read data directly over the Internet.
 {{{
 <Two states; the click replaces the first with the second.>
 
-State 1: a box titled "<laptop icon> your laptop" containing:
+State 1: a box titled "<laptop icon> Your laptop" containing:
 
 <captured> The `#` lines below the command are its real output (trimmed), shown as comments.
 
@@ -432,7 +436,7 @@ Right: the live map. The Sentinel-2 true-color COG only (no basemap, exactly the
 # Making it fast
 
 {{{
-<Section divider slide, title only.>
+<Section divider slide: title left-aligned in the serif; the four-section track along the bottom with this section filled.>
 }}}
 
 ## How remote reads work
@@ -477,7 +481,7 @@ HTTP bandwidth is per connection. Readers make many requests in parallel, so tot
 Cloud optimized formats: Consolidate metadata; predictable formats for reading. Example of regular multi band TIFF vs COG.
 
 {{{
-<Centered text>
+<Left-aligned. The analogy lines have their icons in one fixed column.>
 **The further you go, the better you have to "pack" to maximize the efficiency of each trip.**
 
 <click> <hand icon> If you're moving stuff between rooms, you can make lots of tiny trips carrying stuff by hand.
@@ -486,7 +490,7 @@ Cloud optimized formats: Consolidate metadata; predictable formats for reading. 
 <~1 line of extra vertical space here; everything below shifts down>
 <click> In computers, the relevant limitations are **latency** and **bandwidth**.
 
-<click> <table; icon before each source name>
+<click> <table; icon before each source name. Last column: a log-scale bar (1 s to ~12 days) before the text, lighter over the range; HTTP's bar in red, its row bold. Header gets "(log scale)".>
 | Source | Latency (first byte) | Bandwidth | If RAM latency took 1 second… |
 |---|---|---|---|
 | <ram> RAM | ~100 ns | 20–50 GB/s | 1 second |
@@ -622,7 +626,7 @@ Remote: Raw data → (read) → Spatial layer → (process) → Processed layer 
 # Putting it all together: YCGS Bowerbird
 
 {{{
-<Section divider slide. Left: title, then the URL below as a clickable link, and a QR code for it. Right: screenshot of Bowerbird's default view, captured from the live site.>
+<Section divider slide. Left: title, then the URL below as a clickable link, and a QR code for it. Right: screenshot of Bowerbird's default view, captured from the live site. The four-section track along the bottom, section 4 filled.>
 https://d3eu3eflreofpm.cloudfront.net/
 }}}
 
@@ -688,6 +692,10 @@ Datasets
 - OpenStreetMap tiles: https://tile.openstreetmap.org/{z}/{x}/{y}.png (© OpenStreetMap contributors)
 - "Yale" point used by the tile demos: 41.3111, -72.9267 (components/tilemath.ts)
 - GDAL output captured 2026-11-09 with GDAL 3.13.3.
+- Cover image public/cover-new-haven.jpg (captured 2026-11-11, GDAL 3.13.3):
+  `CPL_VSIL_SHOW_NETWORK_STATS=YES gdal_translate -projwin 660900 4581900 686500 4567500 -of JPEG -co QUALITY=88 /vsicurl/<TCI.tif URL> public/cover-new-haven.jpg`
+  (UTM 18N window, 25.6 × 14.4 km around New Haven at 10 m). Network stats: 23,495,011 bytes. With CPL_DEBUG=ON the ranges are
+  0-16383, 101908480-109805567, 122732544-131399679, 144982016-151896063 (used by the cover's ByteStrip).
 
 Icon names (use in hints as <name icon>; defined in components/icons.ts)
   where things run: laptop, server, ftp, storage, compute, cloud, internet, browser, cdn (any icon can get a small cloud badge)
@@ -698,7 +706,16 @@ Icon names (use in hints as <name icon>; defined in components/icons.ts)
 
 Layout and styling
   Remote on the left, Your computer on the right, in every remote/local diagram.
-  Colors (style.css): --hot (red) for requests and problems, --good (dark green) for cache hits.
+  Design system (style.css :root; one meaning per color):
+    --wire (red)        bytes that crossed the network: fetched ranges, requested tiles, packets. Nothing else is red.
+    --meta (violet)     headers / IFDs / offset tables
+    --remote (blue)     cloud badges, regions
+    --good (dark green) cache hits (work skipped)
+    --warn (amber)      problems that aren't bytes (stale copies, rerun)
+    --yale              titles and structure; --ink body text; --surface / --line for boxes
+  Type: titles in Source Serif 4 (600); body Inter; JetBrains Mono only for code, URLs, byte ranges, JSON.
+  Labels are sentence case ("Internet", "Your computer", "Cache"); no ALL-CAPS tracked labels, no italic word in a title.
+  Smallest on-slide text: about 0.68rem (≈14 px at 1280 wide). Diagram slides center vertically (.diagram-stage / .stack-stage).
   Step-revealed elements use class "reveal" + "concealed" (opacity 0, keeps its space). Don't use "hidden" or "outline"
   as class names: they are UnoCSS utilities (display: none / an outline border).
 
@@ -709,12 +726,12 @@ Pipeline stage names used in flow diagrams (components/stages.ts)
 Slide → implementation (slides.md holds layout, text and notes for every slide)
 | Slide | Implementation |
 |---|---|
-| Title | slides.md frontmatter + .cover-* in style.css |
-| Outline, section slides | inline in slides.md (layout: section) |
+| Title | slides.md (layout: full, class cover-hero) + .cover-hero* in style.css; ByteStrip.vue; public/cover-new-haven.jpg |
+| Outline, section slides | SectionTrack.vue (outline: `large`; dividers: `current`); layout: section in slides.md |
 | How to make a map | PipelineFlow.vue, WhereItRuns.vue, LocalComputerBox.vue (shared "Your computer" box) |
 | Traditional / Subsetting / Mapping at the source / Tiles API diagrams | WorkflowDiagram.vue (props in slides.md), StageChain.vue, FlowArrow.vue |
 | Traditional mapping workflow: Challenges | ChallengesDiagram.vue |
-| We have more to map than ever | inline in slides.md (v-clicks) |
+| We have more to map than ever | inline in slides.md (.more-data* in style.css) |
 | Mapping at the source / Example | MapsApiDemo.vue (PRESETS, VARIABLES, DEFAULT); fallback public/fallback/gibs-default.png |
 | Tiles API URL animation | TileUrlTemplate.vue |
 | Tiles API / Example | TileUrlDemo.vue (PLACES); fallback osm-tile.png |
@@ -723,7 +740,7 @@ Slide → implementation (slides.md holds layout, text and notes for every slide
 | Access globally, render locally | code + output inline in slides.md; RemoteReadDiagram.vue |
 | Access globally / Example | DeckRasterDemo.vue (live, no basemap); code inline in slides.md; fallback deck-cog.png |
 | How remote reads work | RemoteReadAnimation.vue, FileStrip.vue (+ strip.ts) |
-| Cloud optimization | inline in slides.md (v-click + table) |
+| Cloud optimization | inline in slides.md (v-click + HTML table with log-scale bars; .moving*, .latency* in style.css) |
 | Cloud optimization / Example | TiffLayoutAnimation.vue |
 | The cloud-optimized family | inline in slides.md (table) |
 | Overviews | OverviewsAnimation.vue, FileStrip.vue |

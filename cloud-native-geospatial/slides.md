@@ -5,8 +5,8 @@ info: |
   New capabilities enabled by cloud computing and the modern geospatial software stack.
   Alexey N. Shiklomanov, Yale Center for Geospatial Solutions. Yale GIS Day 2026.
 author: Alexey N. Shiklomanov
-layout: cover
-class: text-left
+layout: full
+class: cover-hero
 highlighter: shiki
 lineNumbers: false
 drawings:
@@ -16,18 +16,15 @@ mdc: true
 colorSchema: light
 fonts:
   sans: Inter
+  serif: Source Serif 4
   mono: JetBrains Mono
 ---
 
-<div class="cover-icons">
-  <GeoIcon name="cloud" :size="2.2" />
-  <GeoIcon name="internet" :size="2.2" />
-  <GeoIcon name="laptop" :size="2.2" />
-</div>
+<div class="cover-hero__text">
 
 # The sky is the limit
 
-### New capabilities enabled by cloud computing and the modern geospatial software stack
+<div class="cover-hero__sub">New capabilities enabled by cloud computing and the modern geospatial software stack</div>
 
 <div class="cover-meta">
 
@@ -38,15 +35,23 @@ November 16, 2026 · Yale GIS Day 2026
 
 </div>
 
+<!-- the 4 ranges GDAL fetched to make the background image (captured 2026-11-11, GDAL 3.13.3) -->
+<ByteStrip class="cover-hero__strip" :file-bytes="291914733" :reads="[{ start: 0, end: 16383 }, { start: 101908480, end: 109805567 }, { start: 122732544, end: 131399679 }, { start: 144982016, end: 151896063 }]">
+  This image: 23.5 MB of a 292 MB Sentinel-2 file, read over the internet
+</ByteStrip>
+
+</div>
+
+<div class="cover-hero__credit">Sentinel-2 L2A, 4 August 2025 (ESA / Copernicus, via AWS Open Data)</div>
+
+---
+clicks: 4
 ---
 
 # Outline
 
-<div class="toc-list">
-<div v-click>(1) Traditional mapping workflow and its limitations</div>
-<div v-click>(2) Mapping without the data: Remote access patterns</div>
-<div v-click>(3) Making it fast</div>
-<div v-click>(4) Putting it all together: YCGS Bowerbird</div>
+<div class="outline-stage">
+  <SectionTrack large :step="$clicks" />
 </div>
 
 ---
@@ -54,6 +59,8 @@ layout: section
 ---
 
 # Traditional mapping workflow and its limitations
+
+<SectionTrack class="section-track" :current="1" />
 
 ---
 clicks: 7
@@ -123,20 +130,15 @@ clicks: 3
 # We have more to map than ever
 
 <div class="more-data">
-
-<v-clicks depth="2">
-
-- We have access to more data than ever
-    - NASA alone: >180 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
-    - State and local governments increasingly have their own public data catalogs
-    - Commercial data providers
-- Our problems are bigger and more complex than ever
-- We have more compute resources and capabilities than ever
-
-</v-clicks>
-
-<div v-click class="text-center font-bold text-2xl mt-10">Stop making maps. Start making atlases.</div>
-
+  <div v-click class="more-data__lead">We have access to more data than ever</div>
+  <div class="more-data__sources">
+    <div v-click><span class="more-data__figure">NASA alone: &gt;180 PB, 2 billion files,</span> from &gt;1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)</div>
+    <div v-click>State and local governments increasingly have their own public data catalogs</div>
+    <div v-click>Commercial data providers</div>
+  </div>
+  <div v-click class="more-data__lead">Our problems are bigger and more complex than ever</div>
+  <div v-click class="more-data__lead">We have more compute resources and capabilities than ever</div>
+  <div v-click class="more-data__anchor">Stop making maps. Start making atlases.</div>
 </div>
 
 ---
@@ -144,6 +146,8 @@ layout: section
 ---
 
 # Remote access patterns
+
+<SectionTrack class="section-track" :current="2" />
 
 ---
 
@@ -182,7 +186,7 @@ You still download a file, but it's a much smaller file: just your area, just yo
 
 ---
 
-# *Mapping* at the source
+# Mapping at the source
 
 <div class="diagram-stage">
 
@@ -213,7 +217,7 @@ The long-standing standard for this is OGC WMS (Web Map Service, around since 19
 
 ---
 
-# *Mapping* at the source <span class="subtitle">/ Example</span>
+# Mapping at the source <span class="subtitle">/ Example</span>
 
 <MapsApiDemo />
 
@@ -336,7 +340,7 @@ clicks: 1
 <template #0>
 
 <div class="laptop-box box">
-<div class="box-title"><GeoIcon name="laptop" :size="1.1" /> your laptop</div>
+<div class="box-title"><GeoIcon name="laptop" :size="1.1" /> Your laptop</div>
 
 ```bash
 export CPL_VSIL_SHOW_NETWORK_STATS=YES   # ask GDAL to count bytes
@@ -364,7 +368,7 @@ gdalinfo /vsicurl/$S2
 <template #1>
 
 <div class="laptop-box box">
-<div class="box-title"><GeoIcon name="laptop" :size="1.1" /> your laptop</div>
+<div class="box-title"><GeoIcon name="laptop" :size="1.1" /> Your laptop</div>
 
 ```bash
 gdal raster pipeline read /vsicurl/$S2 \
@@ -448,13 +452,17 @@ layout: section
 
 # Making it fast
 
+<SectionTrack class="section-track" :current="3" />
+
 ---
 clicks: 3
 ---
 
 # How remote reads work
 
+<div class="stack-stage">
 <RemoteReadAnimation :step="$clicks" />
+</div>
 
 <!--
 Basically: One request to "map" a file (read the metadata); subsequent requests to read exactly the data you need.
@@ -476,28 +484,29 @@ clicks: 5
 
 # Cloud optimization: Helping remote readers
 
-<div class="text-center moving">
-
-<div class="text-lg font-semibold mb-3">The further you go, the better you have to "pack" to maximize the efficiency of each trip.</div>
-
-<div v-click="1"><GeoIcon name="hand" :size="1.3" /> If you're moving stuff between rooms, you can make lots of tiny trips carrying stuff by hand.</div>
-<div v-click="2"><GeoIcon name="car" :size="1.3" /> If you're moving across town, you can make a few trips in a car.</div>
-<div v-click="3"><GeoIcon name="truck" :size="1.3" /> If you're moving across the country, you have to pack everything once, neatly, into a truck.</div>
-
-<div v-click="4" style="margin-top: 1.4rem">In computers, the relevant limitations are <b>latency</b> and <b>bandwidth</b>.</div>
-
+<div class="moving">
+  <div class="moving__lead">The further you go, the better you have to "pack" to maximize the efficiency of each trip.</div>
+  <div v-click="1" class="moving__row"><GeoIcon name="hand" :size="1.3" /><span>If you're moving stuff between rooms, you can make lots of tiny trips carrying stuff by hand.</span></div>
+  <div v-click="2" class="moving__row"><GeoIcon name="car" :size="1.3" /><span>If you're moving across town, you can make a few trips in a car.</span></div>
+  <div v-click="3" class="moving__row"><GeoIcon name="truck" :size="1.3" /><span>If you're moving across the country, you have to pack everything once, neatly, into a truck.</span></div>
+  <div v-click="4" class="moving__punch">In computers, the relevant limitations are <b>latency</b> and <b>bandwidth</b>.</div>
 </div>
 
-<div v-click="5" class="latency">
-
-| Source | Latency (first byte) | Bandwidth | If RAM latency took 1 second… |
-|---|---|---|---|
-| <GeoIcon name="ram" :size="1" /> RAM | ~100 ns | 20–50 GB/s | 1 second |
-| <GeoIcon name="ssd" :size="1" /> SSD (NVMe) | ~20–100 µs | 3–7 GB/s | 3–17 minutes |
-| <GeoIcon name="hdd" :size="1" /> Hard disk | ~5–10 ms | 100–200 MB/s | 14–28 hours |
-| <GeoIcon name="internet" :size="1" /> HTTP (cloud storage) | ~20–100 ms | 10–100 MB/s per connection | 2–12 days |
-
-</div>
+<!-- last column: bar length = log10(scaled latency in seconds), 0 to 6 (1 s to ~12 days); lighter part = the range -->
+<table v-click="5" class="latency">
+  <thead><tr><th>Source</th><th>Latency (first byte)</th><th>Bandwidth</th><th>If RAM latency took 1 second… <span class="latency__scale">(log scale)</span></th></tr></thead>
+  <tbody>
+    <tr v-for="r in [
+      { icon: 'ram', name: 'RAM', lat: '~100 ns', bw: '20–50 GB/s', t: '1 second', lo: 1, hi: 1 },
+      { icon: 'ssd', name: 'SSD (NVMe)', lat: '~20–100 µs', bw: '3–7 GB/s', t: '3–17 minutes', lo: 38.4, hi: 50 },
+      { icon: 'hdd', name: 'Hard disk', lat: '~5–10 ms', bw: '100–200 MB/s', t: '14–28 hours', lo: 78.3, hi: 83.3 },
+      { icon: 'internet', name: 'HTTP (cloud storage)', lat: '~20–100 ms', bw: '10–100 MB/s per connection', t: '2–12 days', lo: 88.4, hi: 100, wire: true },
+    ]" :key="r.name" :class="{ 'latency__http': r.wire }">
+      <td><GeoIcon :name="r.icon" :size="1" /> {{ r.name }}</td><td>{{ r.lat }}</td><td>{{ r.bw }}</td>
+      <td class="latency__bar"><span class="latency__track"><span class="latency__lo" :style="{ width: `${r.lo}%` }" /><span class="latency__hi" :style="{ left: `${r.lo}%`, width: `${r.hi - r.lo}%` }" /></span><span class="latency__t">{{ r.t }}</span></td>
+    </tr>
+  </tbody>
+</table>
 
 <!--
 Analogy: Moving stuff. If moving is fast, you can sort stuff however you want. If moving is slow, you need to pre-package things in a specific way.
@@ -515,7 +524,7 @@ clicks: 6
 
 # Cloud optimization <span class="subtitle">/ Example: Cloud-optimizing GeoTIFF</span>
 
-<div class="mt-4">
+<div class="stack-stage">
 <TiffLayoutAnimation :step="$clicks" />
 </div>
 
@@ -564,7 +573,9 @@ clicks: 2
 
 <div class="mb-5">Pre-aggregate data at coarser zoom levels and store in the file.</div>
 
+<div class="stack-stage stack-stage--short">
 <OverviewsAnimation :step="$clicks" />
+</div>
 
 <!--
 [click] Without overviews, a zoomed-out view has to read every full-resolution tile.
@@ -657,6 +668,8 @@ layout: section
 </div>
 <img class="bowerbird-cover__shot" src="/bowerbird.png" alt="Bowerbird screenshot">
 </div>
+
+<SectionTrack class="section-track" :current="4" />
 
 ---
 clicks: 3
