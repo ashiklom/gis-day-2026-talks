@@ -548,29 +548,51 @@ STUB. The "cloud computing" half of the title: when the data is in us-west-2, th
 <click> <left> Compute near the data <right> <<similar animation, but now there's a tiler in the same region. Requests between the tiler and the storage are faster (but not as fast as local reads). Then, send just a small chunk (the final rendered tiles) to the local computer for the image). 
 
 *Understand and measure the performance characteristics of your workflow.*
-If your workflow is limited by data access (downloading, reading), putting compute next to the data is a good idea.
+If your workflow is limited by data access (downloading, reading) or storage, putting compute next to the data is a good idea.
 If your workflow is limited by CPU/memory (processing), processing locally probably makes more sense.
 }}}
 
-## Cache
+## Caching: Skipping work you've already done
 
-Cloudfront, etc. Add an animation here.
+Cloudfront, etc.
+
+{{{
+<<diagram with icons:
+<click> Local computer sends request to remote for a tile (dataset, z, x, y).
+<click> Remote steps through the mapping process (read, process) to make a tile.
+<click> Remote saves a copy of the tile with a filename that matches the dataset-z-x-y pattern.
+<click> Local computer sends another request for the same tile (dataset, z, x, y).
+<click> Remote skips all the processing and just sends the existing image.
+}}}
+
+### Many ways to cache
+
+{{{
+<click> <left> API server <right> <<same diagram as above, maybe a bit smaller to fit in the row>>
+<click> <left> Web browser <right> <<similar diagram that shows that the browser detects a duplicate URL request and pulls the image from its local storage>>
+<click> <left> CDN <cloudflare icon with the word cloudflare; AWS cloudfront icon with the word cloudfront> <<similar diagram but with the CDN in the middle: Laptop sends request to CDN. CDN either pulls from its own cache or forwards the request to the server and then caches the result>>.
+}}}
 
 # Putting it all together: YCGS Bowerbird
 
-## Bowerbird: Our in-house remote sensing image viewer
-
 {{{
-<clickable screenshot of Bowerbird that links to the deployed version>
+<<section header slide, but also include a screenshot of Bowerbird, a clickable URL, and a QR code for the URL>>
 }}}
 
 ## How it works
 
 {{{
-<<Simplified architecture diagram of the app>>
+<<
+Simplified architecture diagram of the app, framed in the same framework used elsewhere in the deck.
+Highlights:
+- Pulls from some existing tiles endpoints.
+- Our own tiler, deployed in multiple regions to be next to the data, and pulling from several different sources
+- deckgl-raster does some of its own local rendering
+- CDN cache of the images
+>>
 }}}
 
-# Coming next (draft)
+# Other topics (draft)
 
 {{{
 <Section divider slide.>
@@ -641,4 +663,9 @@ Slide → implementation (slides.md holds layout, text and notes for every slide
 | Coming next + stubs | inline in slides.md |
 Offline fallbacks: `node scripts/capture.mjs fallbacks` while `npm run dev` is running.
 Screenshots of every slide + click step (for checking a sync): `node scripts/capture.mjs slides <dir>` (ONLY=3,5,7 to limit).
+
+Bowerbird URL: https://d3eu3eflreofpm.cloudfront.net/
+
+Bowerbird source code is on the local machine at ~/projects/yale/multi-resolution-new-haven.
+The AWS deployment (probably not needed, but sharing just in case) is at ~/projects/yale/ycgs-aws-infra/stacks/newhaven-satellite-viewer.
 -->
