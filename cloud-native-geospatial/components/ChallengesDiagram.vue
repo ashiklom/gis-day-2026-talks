@@ -45,8 +45,8 @@ const sources = ['A', 'B', 'C']
           </div>
         </div>
         <div class="chd__wire">
-          <FlowArrow dashed reverse :width="8" class="ghost">"2021?"</FlowArrow>
           <FlowArrow dashed label="download 2024" :width="8" />
+          <FlowArrow dashed reverse :width="8" class="ghost">"2021?"</FlowArrow>
         </div>
         <div class="box chd__local">
           <div class="chd__head"><GeoIcon name="laptop" :size="1.2" /> Your computer</div>

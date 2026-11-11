@@ -2,8 +2,8 @@
 import type { IconName } from './icons'
 
 /**
- * The geographer's toolbox: Your computer (GIS + Web browser) linked to an Internet hub
- * with four equal, mirror-symmetric spokes.
+ * The geographer's toolbox: an Internet hub with four equal, mirror-symmetric spokes (left),
+ * linked to Your computer (GIS + Web browser, right). Remote left / local right, as in every diagram.
  * step: 0 nothing, 1 empty computer box, 2 + GIS / browser, 3 + network. Omit to show all.
  */
 const props = defineProps<{ step?: number }>()
@@ -12,7 +12,7 @@ const at = (n: number) => props.step === undefined || props.step >= n
 type Node = { id: string, dx: number, dy: number, icon: IconName, label: string, cloud?: boolean }
 const W = 720
 const H = 250
-const hub = { x: 505, y: 125, r: 46 }
+const hub = { x: 215, y: 125, r: 46 }
 const SPOKE_X = 128
 const SPOKE_Y = 82
 const nodes: Node[] = [
@@ -21,28 +21,29 @@ const nodes: Node[] = [
   { id: 'ccompute', dx: SPOKE_X, dy: -SPOKE_Y, icon: 'server', label: 'Cloud compute', cloud: true },
   { id: 'cstorage', dx: SPOKE_X, dy: SPOKE_Y, icon: 'storage', label: 'Cloud storage', cloud: true },
 ]
-const boxRight = 225
+const boxW = 225
+const boxLeft = W - boxW
 </script>
 
 <template>
   <div class="where" :style="{ width: `${W}px`, height: `${H}px` }">
-    <svg :width="W" :height="H" class="where__lines reveal" :class="{ hidden: !at(3) }">
+    <svg :width="W" :height="H" class="where__lines reveal" :class="{ concealed: !at(3) }">
       <line v-for="n in nodes" :key="n.id" :x1="hub.x" :y1="hub.y" :x2="hub.x + n.dx" :y2="hub.y + n.dy"
             stroke="currentColor" stroke-width="2" opacity="0.5" />
-      <line :x1="boxRight" :y1="hub.y" :x2="hub.x - hub.r" :y2="hub.y"
+      <line :x1="hub.x + hub.r" :y1="hub.y" :x2="boxLeft" :y2="hub.y"
             stroke="currentColor" stroke-width="2.5" stroke-dasharray="6 6" opacity="0.8" />
     </svg>
 
-    <div class="where__computer reveal" :class="{ hidden: !at(1) }" :style="{ top: `${hub.y}px`, width: `${boxRight}px` }">
+    <div class="where__computer reveal" :class="{ concealed: !at(1) }" :style="{ top: `${hub.y}px`, left: `${boxLeft}px`, width: `${boxW}px` }">
       <LocalComputerBox :show-tools="at(2)" :size="2.2" />
     </div>
 
-    <div class="where__hub reveal" :class="{ hidden: !at(3) }"
+    <div class="where__hub reveal" :class="{ concealed: !at(3) }"
          :style="{ left: `${hub.x}px`, top: `${hub.y}px`, width: `${2 * hub.r}px`, height: `${2 * hub.r}px` }">
       <GeoIcon name="internet" :size="1.9" />
       <div class="where__hub-label">Internet</div>
     </div>
-    <div v-for="n in nodes" :key="n.id" class="where__node reveal" :class="{ hidden: !at(3) }"
+    <div v-for="n in nodes" :key="n.id" class="where__node reveal" :class="{ concealed: !at(3) }"
          :style="{ left: `${hub.x + n.dx}px`, top: `${hub.y + n.dy}px` }">
       <GeoIcon :name="n.icon" :cloud="n.cloud" :size="2.1" :label="n.label" />
     </div>
@@ -52,7 +53,7 @@ const boxRight = 225
 <style scoped>
 .where { position: relative; margin: 0 auto; }
 .where__lines { position: absolute; inset: 0; }
-.where__computer { position: absolute; left: 0; transform: translateY(-50%); display: flex; }
+.where__computer { position: absolute; transform: translateY(-50%); display: flex; }
 .where__computer > * { width: 100%; }
 .where__node {
   position: absolute;
@@ -71,5 +72,5 @@ const boxRight = 225
 }
 .where__hub-label { font-weight: 600; font-size: 0.8rem; letter-spacing: 0.04em; line-height: 1; }
 .reveal { transition: opacity 0.3s; }
-.reveal.hidden { opacity: 0; }
+.reveal.concealed { opacity: 0; }
 </style>

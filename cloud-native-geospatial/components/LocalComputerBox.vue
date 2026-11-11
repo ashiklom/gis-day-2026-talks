@@ -22,7 +22,7 @@ withDefaults(defineProps<{
 <template>
   <div class="lcb box">
     <div class="lcb__head"><GeoIcon name="laptop" :size="1.3" /><span>{{ title }}</span></div>
-    <div class="lcb__tools" :class="{ hidden: !showTools }">
+    <div class="lcb__tools" :class="{ concealed: !showTools }">
       <GeoIcon v-for="t in tools" :key="t.label" :name="t.icon" :label="t.label" :size="size" />
       <slot />
     </div>
@@ -33,5 +33,5 @@ withDefaults(defineProps<{
 .lcb { display: inline-flex; flex-direction: column; gap: 0.4rem; padding-bottom: 0.7rem; }
 .lcb__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; }
 .lcb__tools { display: flex; gap: 1.1rem; justify-content: center; align-items: flex-end; transition: opacity 0.3s; }
-.lcb__tools.hidden { opacity: 0; }
+.lcb__tools.concealed { opacity: 0; }
 </style>

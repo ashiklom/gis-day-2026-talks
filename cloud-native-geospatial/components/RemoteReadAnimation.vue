@@ -37,20 +37,20 @@ const requestNote = computed(() => {
 <template>
   <div class="rra">
     <div class="rra__row">
-      <div class="rra__local">
-        <GeoIcon name="laptop" :size="2.6" label="GDAL / QGIS / browser" />
+      <div class="rra__remote">
+        <GeoIcon name="storage" cloud :size="1.6" />
+        <div class="mono small-note">TCI.tif (292 MB)</div>
       </div>
       <div class="rra__wire">
         <Transition name="fade" mode="out-in">
           <div v-if="step > 0" :key="requestText" class="rra__req">
             <div class="mono rra__reqtext">{{ requestText }}</div>
-            <FlowArrow dashed :width="13">{{ requestNote }}</FlowArrow>
+            <FlowArrow dashed reverse :width="13">{{ requestNote }}</FlowArrow>
           </div>
         </Transition>
       </div>
-      <div class="rra__remote">
-        <GeoIcon name="storage" cloud :size="1.6" />
-        <div class="mono small-note">TCI.tif (292 MB)</div>
+      <div class="rra__local">
+        <GeoIcon name="laptop" :size="2.6" label="GDAL / QGIS / browser" />
       </div>
     </div>
 

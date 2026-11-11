@@ -43,7 +43,7 @@ const localItems = computed(() => parseChain(props.local))
       <div class="wf__internet small-note">internet</div>
       <FlowArrow v-for="(w, i) in wires" :key="i" :dashed="w.dashed ?? true"
                  :reverse="w.dir === 'to-remote'" :width="wireWidth"
-                 class="wf__wire" :class="{ hidden: step !== undefined && w.at !== undefined && step < w.at }">
+                 class="wf__wire" :class="{ concealed: step !== undefined && w.at !== undefined && step < w.at }">
         <slot :name="`wire-${i}`">{{ w.label }}</slot>
       </FlowArrow>
     </div>
@@ -88,6 +88,6 @@ const localItems = computed(() => parseChain(props.local))
   align-items: center;
 }
 .wf__wire { transition: opacity 0.3s; }
-.wf__wire.hidden { opacity: 0; }
+.wf__wire.concealed { opacity: 0; }
 .wf__internet { letter-spacing: 0.1em; text-transform: uppercase; }
 </style>

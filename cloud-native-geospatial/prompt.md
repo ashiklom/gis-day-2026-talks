@@ -567,8 +567,8 @@ Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 274
 <Centered> **One is an overview, one is full resolution. Can you tell which is which?**
 <Two images side by side, same display size (~360 px square): the whole HLS true-color scene (B04/B03/B02) covering New Haven, HLS.S30.T18TXL.2025276T154009.v2.0 (2025-10-03, 0% cloud), from Microsoft Planetary Computer. Left: rendered from the native 3660 × 3660 (30 m) data. Right: rendered from the 458 × 458 overview (240 m). Both are static PNGs made by a script, committed to public/.>
 <click> Under each image:
-  Native (XX MB; 3660 × 3660 px)      Overview (XX MB; 458 × 458 px)
-  <captured> XX = bytes of all tiles read for the three bands at that level, from the files' tile index.
+  Native (48 MB; 3660 × 3660 px)      Overview (0.86 MB; 458 × 458 px)
+  <captured> Bytes of all tiles at that level, three bands, summed from the files' tile index with GDAL 3.13.3 on 2026-11-11 (scripts/hls_overview.py): native = 48,046,112 bytes; 458² overview = 859,469 bytes.
 <click> A small red box (~3 km, around downtown New Haven / Yale) on each image, and under each a zoomed-in inset of that box: the native one sharp (100 × 100 px), the overview one blocky (~12 × 12 px, nearest-neighbour).
 }}}
 
@@ -681,6 +681,9 @@ Datasets
   Defined once in components/cog.ts. Byte offsets and sizes on the remote-read slides come from this file.
   Tile index (read with GDAL 3.13.3 on 2026-11-11): full resolution 1024² tiles, 11 × 11 = 121, 219,981,531 bytes;
   overviews use 512² tiles: 5490² (121), 2745² (36), 1373² (9), 687² (4 tiles, 819,517 bytes). Yale is in full-res tile (7, 2).
+- HLS scene HLS.S30.T18TXL.2025276T154009.v2.0 (2025-10-03, 0% cloud), bands B04/B03/B02, from Microsoft Planetary Computer
+  (collection hls2-s30, anonymous SAS token). 3660² Int16 COGs, 256² tiles, overviews 1830², 915², 458², 229².
+  `python3 scripts/hls_overview.py` re-renders public/hls-*.png and prints the byte counts (needs GDAL Python bindings + numpy).
 - NASA GIBS WMS 1.3.0: https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
 - OpenStreetMap tiles: https://tile.openstreetmap.org/{z}/{x}/{y}.png (© OpenStreetMap contributors)
 - "Yale" point used by the tile demos: 41.3111, -72.9267 (components/tilemath.ts)
@@ -692,6 +695,12 @@ Icon names (use in hints as <name icon>; defined in components/icons.ts)
   actions / misc:   request, download, tiles, code, terminal, search, calendar, palette, subset, package, warning, rerun, cache
   vendor logos:     cloudflare, cloudfront
   moving / storage: hand, car, truck, ram, ssd, hdd
+
+Layout and styling
+  Remote on the left, Your computer on the right, in every remote/local diagram.
+  Colors (style.css): --hot (red) for requests and problems, --good (dark green) for cache hits.
+  Step-revealed elements use class "reveal" + "concealed" (opacity 0, keeps its space). Don't use "hidden" or "outline"
+  as class names: they are UnoCSS utilities (display: none / an outline border).
 
 Pipeline stage names used in flow diagrams (components/stages.ts)
   Raw data, Spatial layer, Processed layer, Image, subset.tif, Tiles, Map
@@ -718,6 +727,7 @@ Slide → implementation (slides.md holds layout, text and notes for every slide
 | Cloud optimization / Example | TiffLayoutAnimation.vue |
 | The cloud-optimized family | inline in slides.md (table) |
 | Overviews | OverviewsAnimation.vue, FileStrip.vue |
+| Overviews / Example: HLS | HlsOverviewExample.vue; public/hls-*.png from scripts/hls_overview.py |
 | Bring the compute to the data | ComputeNearData.vue (one looping row per mode) |
 | Caching / Many ways to cache | CacheDiagram.vue (step), CacheWays.vue (browser, cdn) |
 | Bowerbird section slide | inline in slides.md; public/bowerbird.png (`node scripts/capture.mjs bowerbird`), public/bowerbird-qr.svg (qrcode package) |

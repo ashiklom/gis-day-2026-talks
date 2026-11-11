@@ -2,12 +2,13 @@
 import { parseChain } from './stages'
 
 /**
- * Bowerbird, simplified, in the deck's remote / local framing.
- * step 1: existing tile services; 2: our tiler next to the data in 3 regions;
- * 3: COGs rendered in the browser; 4: CloudFront cache on the tiler's wire.
+ * Bowerbird, simplified, in the deck's remote (left) / local (right) framing.
+ * Rows top to bottom in click order:
+ * step 1: COGs rendered in the browser; 2: existing tile services;
+ * 3: our tiler, deployed next to the data in 3 regions, behind one CloudFront cache.
  * Source: multi-resolution-new-haven (terraform module v0.8.2).
  */
-const props = withDefaults(defineProps<{ step?: number }>(), { step: 4 })
+const props = withDefaults(defineProps<{ step?: number }>(), { step: 3 })
 const on = (n: number) => props.step >= n
 
 const regions = [
@@ -17,7 +18,7 @@ const regions = [
 ]
 const tilesToMap = parseChain(['tiles', '>stitch', 'map'])
 const cogToImage = parseChain(['raw:COG', '>read + render (GPU)', 'image'])
-const remoteTiles = parseChain(['raw', '>… render', 'tiles'])
+const remoteTiles = parseChain(['raw', '>read · process · render', 'tiles'])
 const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 </script>
 
@@ -29,67 +30,71 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
       <span class="bba__browser"><GeoIcon name="browser" :size="1.1" /> Web browser: Bowerbird (deck.gl)</span>
     </div>
 
-    <!-- 1. existing tile services -->
-    <div class="bba__remote box reveal" :class="{ hidden: !on(1) }" style="grid-row: 2">
-      <div class="bba__title">Existing tile services</div>
-      <div class="small-note">OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA VEDA</div>
-      <StageChain :items="remoteTiles" :size="1.6" :arrow-width="5" />
-    </div>
-    <div class="bba__wire reveal" :class="{ hidden: !on(1) }" style="grid-row: 2">
-      <FlowArrow dashed reverse :width="11"><span class="mono bba__url">GET /{z}/{x}/{y}.png</span></FlowArrow>
-      <FlowArrow dashed :width="11" label="PNG tiles" />
-    </div>
-    <div class="bba__local reveal" :class="{ hidden: !on(1) }" style="grid-row: 2">
-      <StageChain :items="tilesToMap" :size="1.9" :arrow-width="2.8" />
-    </div>
-
-    <!-- 2. our tiler -->
-    <div class="bba__remote box reveal" :class="{ hidden: !on(2) }" style="grid-row: 3">
-      <div class="bba__title">Our tiler <span class="small-note">TiTiler on AWS Lambda, next to the data</span></div>
-      <StageChain :items="tilerChain" :size="1.6" :arrow-width="7" />
-      <div class="bba__regions">
-        <div v-for="r in regions" :key="r.region" class="bba__region">
-          <div class="bba__regionlbl mono">{{ r.region }}</div>
-          <GeoIcon name="compute" cloud :size="1.3" />
-          <div class="bba__regiondata">{{ r.data }}</div>
-        </div>
-      </div>
-    </div>
-    <div class="bba__wire reveal" :class="{ hidden: !on(2) }" style="grid-row: 3">
-      <div class="bba__cdn reveal" :class="{ hidden: !on(4) }">
-        <GeoIcon name="cloudfront" :size="1.3" />
-        <div>
-          <b>CloudFront</b> <GeoIcon name="cache" :size="0.9" /><br>
-          <span class="bba__cdnnote">repeat tiles never reach Lambda</span>
-        </div>
-      </div>
-      <FlowArrow dashed reverse :width="11"><span class="mono bba__url">GET /datasets/…/{z}/{x}/{y}</span></FlowArrow>
-      <FlowArrow dashed :width="11" label="tiles" />
-    </div>
-    <div class="bba__local reveal" :class="{ hidden: !on(2) }" style="grid-row: 3">
-      <StageChain :items="tilesToMap" :size="1.9" :arrow-width="2.8" />
-    </div>
-
-    <!-- 3. local rendering -->
-    <div class="bba__remote box reveal bba__cogs" :class="{ hidden: !on(3) }" style="grid-row: 4">
+    <!-- 1. local rendering -->
+    <div class="bba__remote box reveal bba__cogs" :class="{ concealed: !on(1) }" style="grid-row: 2">
       <GeoIcon name="storage" cloud :size="1.6" />
       <div>
         <div class="bba__title">COGs on S3</div>
         <div class="small-note">no tiler: the browser reads them directly</div>
       </div>
     </div>
-    <div class="bba__wire reveal" :class="{ hidden: !on(3) }" style="grid-row: 4">
-      <FlowArrow dashed :width="11" label="HTTP range requests" />
+    <div class="bba__wire reveal" :class="{ concealed: !on(1) }" style="grid-row: 2">
+      <FlowArrow dashed :width="10" label="HTTP range requests" />
     </div>
-    <div class="bba__local reveal" :class="{ hidden: !on(3) }" style="grid-row: 4">
-      <StageChain :items="cogToImage" :size="1.9" :arrow-width="5.5" />
+    <div class="bba__local reveal" :class="{ concealed: !on(1) }" style="grid-row: 2">
+      <StageChain :items="cogToImage" :size="1.8" :arrow-width="5.5" />
+    </div>
+
+    <!-- 2. existing tile services -->
+    <div class="bba__remote box reveal" :class="{ concealed: !on(2) }" style="grid-row: 3">
+      <div class="bba__title">Existing tile services</div>
+      <div class="small-note">OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA</div>
+      <StageChain :items="remoteTiles" :size="1.5" :arrow-width="8" />
+    </div>
+    <div class="bba__wire reveal" :class="{ concealed: !on(2) }" style="grid-row: 3">
+      <FlowArrow dashed reverse :width="10"><span class="mono bba__url">GET /{z}/{x}/{y}.png</span></FlowArrow>
+      <FlowArrow dashed :width="10" label="PNG tiles" />
+    </div>
+    <div class="bba__local reveal" :class="{ concealed: !on(2) }" style="grid-row: 3">
+      <StageChain :items="tilesToMap" :size="1.8" :arrow-width="2.8" />
+    </div>
+
+    <!-- 3. our tiler in 3 regions, behind CloudFront -->
+    <div class="bba__remote box reveal" :class="{ concealed: !on(3) }" style="grid-row: 4">
+      <div class="bba__title">Our tiler <span class="small-note">TiTiler on AWS Lambda, deployed next to the data in 3 regions</span></div>
+      <div class="bba__tiler">
+        <div class="bba__stack">
+          <div v-for="r in regions" :key="r.region" class="bba__region">
+            <GeoIcon name="compute" cloud :size="1.1" />
+            <div class="bba__regionname">
+              <div class="bba__regionlbl mono">{{ r.region }}</div>
+              <div class="bba__regiondata">{{ r.data }}</div>
+            </div>
+            <StageChain :items="tilerChain" :size="1.05" :arrow-width="3.8" />
+          </div>
+          <div class="bba__bracket" />
+        </div>
+        <div class="bba__cdn">
+          <GeoIcon name="cloudfront" :size="1.4" />
+          <b>CloudFront</b>
+          <span class="bba__cdncache"><GeoIcon name="cache" :size="0.85" /> cache</span>
+          <span class="bba__cdnnote">repeat tiles never reach Lambda</span>
+        </div>
+      </div>
+    </div>
+    <div class="bba__wire reveal" :class="{ concealed: !on(3) }" style="grid-row: 4">
+      <FlowArrow dashed reverse :width="10"><span class="mono bba__url">GET /datasets/…/{z}/{x}/{y}</span></FlowArrow>
+      <FlowArrow dashed :width="10" label="tiles" />
+    </div>
+    <div class="bba__local reveal" :class="{ concealed: !on(3) }" style="grid-row: 4">
+      <StageChain :items="tilesToMap" :size="1.8" :arrow-width="2.8" />
     </div>
   </div>
 </template>
 
 <style scoped>
 .bba {
-  display: grid; grid-template-columns: 1fr 175px 300px; grid-template-rows: auto auto auto auto;
+  display: grid; grid-template-columns: 1fr 160px 270px; grid-template-rows: auto auto auto auto;
   gap: 0.45rem 0.4rem; align-items: center; font-size: 0.8rem;
 }
 .bba__localbg { grid-column: 3; grid-row: 1 / 5; align-self: stretch; z-index: 0; }
@@ -101,12 +106,28 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 .bba__wire { grid-column: 2; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .bba__local { grid-column: 3; z-index: 1; display: flex; justify-content: center; }
 .bba__url { font-style: normal; font-size: 0.55rem; }
-.bba__regions { display: flex; gap: 0.4rem; }
-.bba__region { flex: 1; display: flex; flex-direction: column; align-items: center; border: 1.5px dashed var(--accent-2); border-radius: 8px; padding: 0.15rem 0.3rem 0.25rem; }
+
+.bba__tiler { display: flex; align-items: center; gap: 0; margin-top: 0.2rem; }
+.bba__stack { position: relative; display: flex; flex-direction: column; gap: 0.3rem; padding-right: 16px; }
+.bba__region {
+  position: relative; display: flex; align-items: center; gap: 0.4rem;
+  border: 1.5px dashed var(--accent-2); border-radius: 8px; padding: 0.1rem 0.4rem; background: var(--bg);
+}
+/* short line from each region box to the bracket */
+.bba__region::after { content: ''; position: absolute; right: -17px; top: 50%; width: 16px; border-top: 1.5px solid var(--muted); }
+/* vertical bracket joining the three lines, then on to CloudFront */
+.bba__bracket { position: absolute; right: 0; top: 16.6%; bottom: 16.6%; border-right: 1.5px solid var(--muted); }
+.bba__bracket::after { content: ''; position: absolute; right: -14px; top: 50%; width: 14px; border-top: 1.5px solid var(--muted); }
+.bba__region :deep(.flow-arrow__label) { font-size: 0.6rem; }
+.bba__regionname { width: 5.8rem; line-height: 1.1; }
 .bba__regionlbl { font-size: 0.6rem; font-weight: 700; color: var(--accent-2); }
-.bba__regiondata { font-size: 0.62rem; text-align: center; }
-.bba__cdn { display: flex; align-items: center; gap: 0.35rem; font-size: 0.68rem; line-height: 1.15; background: var(--bg); border: 1.5px solid var(--hot); border-radius: 8px; padding: 0.2rem 0.4rem; }
-.bba__cdnnote { color: var(--hot); font-size: 0.6rem; }
+.bba__regiondata { font-size: 0.62rem; }
+.bba__cdn {
+  margin-left: 14px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.1rem;
+  font-size: 0.7rem; line-height: 1.15; background: var(--bg); border: 1.5px solid var(--accent-warm); border-radius: 8px; padding: 0.3rem 0.4rem; width: 6.2rem;
+}
+.bba__cdncache { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.6rem; color: var(--muted); }
+.bba__cdnnote { color: var(--accent-warm); font-size: 0.58rem; }
 .reveal { transition: opacity 0.3s; }
-.reveal.hidden { opacity: 0; }
+.reveal.concealed { opacity: 0; }
 </style>

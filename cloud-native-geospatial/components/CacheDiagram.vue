@@ -77,12 +77,12 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 .cd__pipe.skipped { opacity: 0.25; }
 .cd__pipewrap { position: relative; }
 .cd__skip {
-  position: absolute; left: 0; right: 0; top: 38%; height: 0; border-top: 3px solid var(--hot);
-  display: flex; justify-content: center;
+  position: absolute; left: 0; right: 0; top: 38%; height: 3px; background: var(--good);
+  display: flex; justify-content: center; align-items: center;
 }
 .cd__skip span {
-  display: inline-block; transform: translateY(-50%); background: var(--bg); padding: 0 0.6rem; border: 2px solid var(--hot); border-radius: 6px;
-  color: var(--hot); font-weight: 800; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase;
+  background: var(--box-bg); padding: 0 0.6rem; line-height: 1.2;
+  color: var(--good); font-weight: 800; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase;
 }
 .cd__shelf {
   display: flex; align-items: center; gap: 0.5rem; min-height: 2.3rem;
@@ -90,14 +90,14 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 }
 .cd__shelflbl { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
 .cd__file { font-size: 0.68rem; background: var(--bg); border: 1px solid var(--box-border); border-radius: 4px; padding: 0.1rem 0.4rem; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.3s; }
-.cd__shelf.hit .cd__file { border-color: var(--hot); color: var(--hot); box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.25); font-weight: 700; }
+.cd__shelf.hit .cd__file { border-color: var(--good); color: var(--good); box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.25); font-weight: 700; }
 .cd__wires { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
 .cd__internet { letter-spacing: 0.1em; text-transform: uppercase; }
 .cd__wire { transition: opacity 0.3s; }
 .cd__wire.off { opacity: 0; }
-.cd__wire.hot { color: var(--hot); }
+.cd__wire.hot { color: var(--good); }
 .cd__url { font-style: normal; font-size: 0.68rem; }
-.cd__note { color: var(--hot); font-weight: 700; font-size: 0.72rem; }
+.cd__note { color: var(--good); font-weight: 700; font-size: 0.72rem; }
 .cd__img { margin: auto 0; transition: opacity 0.3s; }
 .cd__img.off { opacity: 0; }
 .drop-enter-active { transition: all 0.4s ease-out; }

@@ -12,13 +12,13 @@ const shown = (it: ChainItem) => props.step === undefined || it.at === undefined
 <template>
   <div class="chain">
     <template v-for="(it, i) in items" :key="i">
-      <span v-if="it.kind === 'stage'" class="chain-stage reveal" :class="{ hidden: !shown(it) }">
+      <span v-if="it.kind === 'stage'" class="chain-stage reveal" :class="{ concealed: !shown(it) }">
         <GeoIcon :name="it.icon" :label="it.label" :size="size ?? 2.2" />
         <span v-if="it.tag" class="chain-tag mono">{{ it.tag }}</span>
       </span>
-      <FlowArrow v-else-if="it.kind === 'arrow'" class="reveal" :class="{ hidden: !shown(it) }"
+      <FlowArrow v-else-if="it.kind === 'arrow'" class="reveal" :class="{ concealed: !shown(it) }"
                  :label="it.label" :width="arrowWidth ?? 3.6" />
-      <div v-else class="chain-group box reveal" :class="{ hidden: !shown(it) }">
+      <div v-else class="chain-group box reveal" :class="{ concealed: !shown(it) }">
         <div class="box-title">{{ it.label }}</div>
         <StageChain :items="it.items" :size="size" :arrow-width="arrowWidth" :step="step" />
       </div>
@@ -39,5 +39,5 @@ const shown = (it: ChainItem) => props.step === undefined || it.at === undefined
 }
 .chain-group { padding: 0.35rem 0.6rem 0.6rem; }
 .reveal { transition: opacity 0.3s; }
-.reveal.hidden { opacity: 0; }
+.reveal.concealed { opacity: 0; }
 </style>

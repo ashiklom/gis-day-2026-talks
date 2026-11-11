@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 /**
  * Round trips needed to read a small window from a regular GeoTIFF vs. a COG.
- * Steps 1–4 walk the regular file; steps 5–6 walk the COG.
+ * Steps 1–4 walk the regular file; steps 5–6 walk the COG (the COG row stays hidden until step 5).
  */
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 0 })
 
@@ -41,13 +41,13 @@ const cogTrips = computed(() => Math.min(Math.max(props.step - regular.trips.len
 
 const rows = computed(() => [
   { title: 'Regular GeoTIFF', ...regular, shown: regTrips.value },
-  { title: 'Cloud-Optimized GeoTIFF', ...cog, shown: cogTrips.value },
+  { title: 'Cloud-Optimized GeoTIFF', ...cog, shown: cogTrips.value, hidden: props.step <= regular.trips.length },
 ])
 </script>
 
 <template>
   <div class="tla">
-    <div v-for="row in rows" :key="row.title" class="tla__row">
+    <div v-for="row in rows" :key="row.title" class="tla__row reveal" :class="{ concealed: row.hidden }">
       <div class="tla__head">
         <b>{{ row.title }}</b>
         <span class="tla__count" :class="{ on: row.shown > 0 }">

@@ -49,19 +49,19 @@ const rows = computed(() => [
   <div class="ova">
     <div v-for="r in rows" :key="r.title" class="ova__row">
       <div class="ova__top">
-        <GeoIcon name="laptop" :size="1.8" />
-        <div class="ova__wire">
-          <Transition name="fade">
-            <div v-if="r.on" class="ova__req">
-              <div class="mono ova__reqtext">{{ r.request }}</div>
-              <FlowArrow dashed :width="14">{{ r.note }}</FlowArrow>
-            </div>
-          </Transition>
-        </div>
         <div class="ova__remote">
           <GeoIcon name="storage" cloud :size="1.4" />
           <div class="small-note"><b>{{ r.title }}</b></div>
         </div>
+        <div class="ova__wire">
+          <Transition name="fade">
+            <div v-if="r.on" class="ova__req">
+              <div class="mono ova__reqtext">{{ r.request }}</div>
+              <FlowArrow dashed reverse :width="14">{{ r.note }}</FlowArrow>
+            </div>
+          </Transition>
+        </div>
+        <GeoIcon name="laptop" :size="1.8" />
       </div>
       <FileStrip :segments="r.segments" :hot="r.hot" :max-draw="121" />
     </div>

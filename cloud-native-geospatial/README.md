@@ -23,12 +23,15 @@ npm run export     # PDF (needs: npx playwright install chromium)
   - `DeckRasterDemo.vue`: deck.gl-raster reading a Sentinel-2 COG straight from S3
 - `LocalComputerBox.vue`: the shared "Your computer" box (GIS + Web browser).
 - Animations (driven by slide clicks): `RemoteReadAnimation.vue`, `OverviewsAnimation.vue` (both on `FileStrip.vue`), `TiffLayoutAnimation.vue`, `TileUrlTemplate.vue`, `ChallengesDiagram.vue`, `CacheDiagram.vue`, `BowerbirdArchitecture.vue`. `ComputeNearData.vue` loops on its own.
+- `HlsOverviewExample.vue` + `public/hls-*.png`: the HLS overview comparison. Regenerate the images (and print the byte counts) with `python3 scripts/hls_overview.py` (needs GDAL Python bindings and numpy).
+- Diagrams put remote on the left and "Your computer" on the right. Elements revealed by clicks use the classes `reveal` + `concealed` (not `hidden`, which is a UnoCSS utility for `display: none`).
 - `public/bowerbird.png` (`node scripts/capture.mjs bowerbird`) and `public/bowerbird-qr.svg`: the Bowerbird slide.
 - `public/fallback/`: cached images shown automatically when a live demo can't reach the network (conference wifi insurance). Regenerate with `node scripts/capture.mjs fallbacks` while `npm run dev` is running.
 
 ## Data used
 
 - Sentinel-2 L2A scene `S2B_T18TXL_20250804T154608_L2A` (TCI.tif, 291,914,733 bytes), from Earth Search / AWS Open Data.
+- HLS scene `HLS.S30.T18TXL.2025276T154009.v2.0` (B04/B03/B02), from Microsoft Planetary Computer.
 - NASA GIBS WMS (`HLS_S30/L30`, OPERA DSWx-HLS, MODIS NDVI and LST).
 - OpenStreetMap tiles (© OpenStreetMap contributors).
 

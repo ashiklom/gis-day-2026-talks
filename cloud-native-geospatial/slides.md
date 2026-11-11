@@ -42,9 +42,9 @@ November 16, 2026 · Yale GIS Day 2026
 
 # Outline
 
-<div class="outline">
+<div class="toc-list">
 <div v-click>(1) Traditional mapping workflow and its limitations</div>
-<div v-click>(2) Mapping without (local copies of) the data: Remote access patterns</div>
+<div v-click>(2) Mapping without the data: Remote access patterns</div>
 <div v-click>(3) Making it fast</div>
 <div v-click>(4) Putting it all together: YCGS Bowerbird</div>
 </div>
@@ -64,7 +64,7 @@ clicks: 7
 <div class="map-intro">
   <div class="map-intro__label">Mapping workflow</div>
   <PipelineFlow :size="2.3" :step="$clicks" />
-  <div class="map-intro__label reveal" :class="{ hidden: $clicks < 5 }">Geographer's toolbox</div>
+  <div class="map-intro__label reveal" :class="{ concealed: $clicks < 5 }">Geographer's toolbox</div>
   <WhereItRuns :step="Math.max($clicks - 4, 0)" />
 </div>
 
@@ -113,7 +113,7 @@ clicks: 3
 <div class="challenges">
   <div class="challenges__list">
     <div v-for="(c, i) in ['Data gets out of sync', 'Different time or place', 'Multiple sources']" :key="c"
-         class="challenges__item" :class="{ hidden: $clicks < i + 1, current: $clicks === i + 1 }">{{ c }}</div>
+         class="challenges__item" :class="{ concealed: $clicks < i + 1, current: $clicks === i + 1 }">{{ c }}</div>
   </div>
   <ChallengesDiagram :step="$clicks" />
 </div>
@@ -230,7 +230,7 @@ Try: Harbor + Long Island Sound with "Surface water"; or switch to MODIS NDVI to
 -->
 
 ---
-clicks: 4
+clicks: 3
 ---
 
 # Tiles API
@@ -247,7 +247,7 @@ clicks: 4
 
 </div>
 
-<div class="mt-10">
+<div class="mt-8">
   <TileUrlTemplate :step="$clicks" />
 </div>
 
@@ -256,7 +256,7 @@ The full dataset, interactive.
 
 Same as Maps, but the requests are standardized into a pyramid of 256 × 256 tiles: at zoom z there are 2^z × 2^z tiles. The client figures out which tiles cover the screen and fills in {z}/{x}/{y}.
 
-[click] Zoom picks z. [click] Where you are picks x and y. [click] Pan east one tile: x + 1. [click] Zoom in one level: four times as many tiles, x and y roughly double.
+[click] The client fills in the zoom level (z) and map position (x, y). [click] At zoom 11, one tile covers New Haven, East Haven, and Branford. [click] Zoom in one level: four times as many tiles, x and y roughly double.
 
 Note on ordering: OSM-style "XYZ" URLs are {z}/{x}/{y}. OGC API – Tiles and WMTS use {tileMatrix}/{tileRow}/{tileCol}, i.e. z/y/x. Same tiles, different order.
 
@@ -307,7 +307,9 @@ Note that this works in QGIS (XYZ Tiles connection with the same URL).
   <div v-click="1" class="annot"><GeoIcon name="raw-data" :size="1.4" /> Read from different sources</div>
   <div v-click="2" class="annot"><GeoIcon name="processed-layer" :size="1.4" /> Process + render using different libraries</div>
   <div v-click="3" class="annot"><GeoIcon name="image" :size="1.4" /> End result is always a PNG with headers, regardless of source</div>
-  <div v-click="3" class="small-note mt-4">In practice: <b>TiTiler</b>, <b>rio-tiler</b>, <b>titiler-xarray</b>, …</div>
+  <div v-click="3" class="small-note mt-4">In practice, adapt an existing tiler, such as:
+    <ul class="tiler-list"><li><b>TiTiler</b></li><li><b>rio-tiler</b></li><li><b>titiler-xarray</b></li></ul>
+  </div>
 </div>
 
 </div>
@@ -338,8 +340,10 @@ clicks: 1
 
 ```bash
 export CPL_VSIL_SHOW_NETWORK_STATS=YES   # ask GDAL to count bytes
+
 S2=https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/\
 sentinel-2-c1-l2a/18/T/XL/2025/8/S2B_T18TXL_20250804T154608_L2A/TCI.tif
+
 gdalinfo /vsicurl/$S2
 # Size is 10980, 10980
 # Coordinate System is: WGS 84 / UTM zone 18N    Pixel Size = (10, -10)
@@ -571,6 +575,16 @@ clicks: 2
 -->
 
 ---
+clicks: 2
+---
+
+# Overviews <span class="subtitle">/ Example: HLS</span>
+
+<div class="text-center font-bold text-lg">One is an overview, one is full resolution. Can you tell which is which?</div>
+
+<HlsOverviewExample :step="$clicks" />
+
+---
 
 # Bring the compute to the data
 
@@ -645,7 +659,7 @@ layout: section
 </div>
 
 ---
-clicks: 4
+clicks: 3
 ---
 
 # How it works
