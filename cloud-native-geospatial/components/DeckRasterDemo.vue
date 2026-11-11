@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { Deck } from '@deck.gl/core'
-import { TileLayer } from '@deck.gl/geo-layers'
-import { BitmapLayer } from '@deck.gl/layers'
 import { COGLayer, COGSource } from '@developmentseed/deck.gl-geotiff'
 import { RangeReader } from '@developmentseed/range-reader'
 import { fallbackUrl } from './fallback'
 import { fmtBytes, S2_TCI_BYTES, S2_TCI_URL } from './cog'
 import { YALE } from './tilemath'
 
-const props = withDefaults(defineProps<{ height?: string, basemap?: boolean }>(), { height: '400px', basemap: true })
+// No basemap on purpose: exactly the code shown on the slide (an OSM basemap loaded faster than the COG and flashed first)
+withDefaults(defineProps<{ height?: string }>(), { height: '400px' })
 
 const canvas = ref<HTMLCanvasElement>()
 const failed = ref(false)
@@ -28,18 +27,6 @@ onMounted(async () => {
     const source = await COGSource.open(S2_TCI_URL, { reader })
 
     const layers: any[] = []
-    if (props.basemap) {
-      layers.push(new TileLayer({
-        id: 'osm',
-        data: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-        maxZoom: 19,
-        tileSize: 256,
-        renderSubLayers: (p: any) => {
-          const { west, south, east, north } = p.tile.bbox
-          return new BitmapLayer(p, { data: undefined, image: p.data, bounds: [west, south, east, north] })
-        },
-      }))
-    }
     layers.push(new COGLayer({ id: 'sentinel2', source }))
 
     deck = new Deck({
@@ -72,7 +59,7 @@ onBeforeUnmount(() => {
       <b>{{ fmtBytes(stats.bytes) }}</b> of {{ fmtBytes(S2_TCI_BYTES) }}
       ({{ (100 * stats.bytes / S2_TCI_BYTES).toFixed(2) }}%)
     </div>
-    <div class="deck-demo__attr">Sentinel-2 L2A (ESA / Copernicus, via AWS Open Data) · © OpenStreetMap contributors</div>
+    <div class="deck-demo__attr">Sentinel-2 L2A (ESA / Copernicus, via AWS Open Data)</div>
   </div>
 </template>
 

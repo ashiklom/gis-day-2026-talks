@@ -36,6 +36,12 @@ import Palette from '~icons/mdi/palette'
 import Filter from '~icons/carbon/filter'
 import Package from '~icons/mdi/package-variant-closed'
 import Warning from '~icons/carbon/warning'
+import Browser from '~icons/carbon/application-web'
+import Rerun from '~icons/carbon/renew'
+import Cache from '~icons/carbon/archive'
+import Cdn from '~icons/carbon/edge-node'
+import Cloudflare from '~icons/logos/cloudflare-icon'
+import Cloudfront from '~icons/logos/aws-cloudfront'
 
 export const icons = {
   // where things run
@@ -46,6 +52,8 @@ export const icons = {
   'compute': Compute,
   'cloud': Cloud,
   'internet': Internet,
+  'browser': Browser, // web browser
+  'cdn': Cdn, // content delivery network node
   // the mapping pipeline
   'raw-data': Database,
   'layer': Layers,
@@ -65,6 +73,11 @@ export const icons = {
   'subset': Filter,
   'package': Package,
   'warning': Warning,
+  'rerun': Rerun,
+  'cache': Cache,
+  // vendor logos (keep their own colors)
+  'cloudflare': Cloudflare,
+  'cloudfront': Cloudfront,
   // moving analogy + storage tiers
   'hand': Hand,
   'car': Car,

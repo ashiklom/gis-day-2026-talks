@@ -1,6 +1,8 @@
 // Screenshot helper. Run while `npm run dev` is serving on :3030.
 //
 //   node scripts/capture.mjs fallbacks      -> refresh public/fallback/*.png from the live demos
+//   node scripts/capture.mjs bowerbird      -> public/bowerbird.png (live Bowerbird site, default view;
+//                                              doesn't need the dev server)
 //   node scripts/capture.mjs slides <dir>   -> screenshot every slide + click step into <dir>
 //                                              (ONLY=3,5,7 to limit to some slides)
 import { mkdir } from 'node:fs/promises'
@@ -29,7 +31,14 @@ async function findSlide(text) {
   throw new Error(`slide "${text}" not found`)
 }
 
-if (mode === 'fallbacks') {
+if (mode === 'bowerbird') {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('https://d3eu3eflreofpm.cloudfront.net/', { waitUntil: 'networkidle', timeout: 90000 }).catch(() => {})
+  await sleep(12000)
+  await page.screenshot({ path: 'public/bowerbird.png' })
+  console.log('public/bowerbird.png')
+}
+else if (mode === 'fallbacks') {
   const dir = 'public/fallback'
   await mkdir(dir, { recursive: true })
 

@@ -69,3 +69,29 @@ html.dark {
 .latency td, .latency th { padding: 0.2rem 0.6rem !important; }
 .latency .geo-icon { vertical-align: middle; margin-right: 0.25rem; }
 .diagram-stage { display: flex; align-items: center; justify-content: center; min-height: 340px; }
+.reveal { transition: opacity 0.3s; }
+.reveal.hidden { opacity: 0; }
+.outline { margin-top: 2.5rem; font-size: 1.6rem; line-height: 1.4; display: flex; flex-direction: column; gap: 1.2rem; }
+.map-intro { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 1.4rem 0.5rem; margin-top: 0.8rem; }
+.map-intro__label { font-size: 1.1rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
+.challenges { display: grid; grid-template-columns: 210px 1fr; gap: 1rem; align-items: center; min-height: 360px; }
+.challenges__list { display: flex; flex-direction: column; gap: 1.4rem; }
+.challenges__item { font-size: 1.1rem; color: var(--muted); transition: all 0.3s; }
+.challenges__item.current { color: inherit; font-weight: 700; }
+.challenges__item.hidden { opacity: 0; }
+.more-data { font-size: 1.15rem; }
+.co-family table { font-size: 0.9rem; }
+.compute-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+.compute-row { display: grid; grid-template-columns: 170px 1fr; align-items: center; }
+.compute-row__label { font-weight: 700; font-size: 1rem; }
+.compute-takeaway { margin-top: 0.8rem; font-size: 0.85rem; line-height: 1.45; }
+.cache-rows { display: flex; flex-direction: column; gap: 0.7rem; }
+.cache-row { display: grid; grid-template-columns: 150px 1fr; align-items: center; }
+.cache-row__label { font-weight: 700; font-size: 1rem; }
+.cache-row__logos { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.7rem; font-weight: 400; margin-top: 0.3rem; }
+.cache-row__logos .geo-icon { vertical-align: middle; }
+.bowerbird-cover { display: grid; grid-template-columns: 1fr 1.25fr; gap: 1.5rem; align-items: center; text-align: left; }
+.bowerbird-cover h1 { font-size: 2.1rem !important; line-height: 1.15 !important; }
+.bowerbird-cover__url { display: inline-block; font-size: 0.8rem; margin-top: 0.8rem; }
+.bowerbird-cover__qr { width: 120px; margin-top: 0.8rem; background: white; padding: 6px; border-radius: 6px; }
+.bowerbird-cover__shot { width: 100%; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,0.25); }

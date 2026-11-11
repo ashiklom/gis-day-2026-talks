@@ -40,26 +40,43 @@ November 16, 2026 · Yale GIS Day 2026
 
 ---
 
-# Concepts
+# Outline
 
-<div class="text-center font-semibold mb-2 mt-2">The mapping process</div>
+<div class="outline">
+<div v-click>(1) Traditional mapping workflow and its limitations</div>
+<div v-click>(2) Mapping without (local copies of) the data: Remote access patterns</div>
+<div v-click>(3) Making it fast</div>
+<div v-click>(4) Putting it all together: YCGS Bowerbird</div>
+</div>
 
-<PipelineFlow :size="3" />
+---
+layout: section
+---
 
-<div v-click>
+# Traditional mapping workflow and its limitations
 
-<div class="text-center font-semibold mt-6 mb-1">Where it runs</div>
+---
+clicks: 7
+---
 
-<WhereItRuns />
+# How to make a map
 
+<div class="map-intro">
+  <div class="map-intro__label">Mapping workflow</div>
+  <PipelineFlow :size="2.3" :step="$clicks" />
+  <div class="map-intro__label reveal" :class="{ hidden: $clicks < 5 }">Geographer's toolbox</div>
+  <WhereItRuns :step="Math.max($clicks - 4, 0)" />
 </div>
 
 <!--
 Every map you've ever made follows the same steps: read raw data into a spatial layer, process it, then render an image.
 
-[click] The question for this talk is *where* each of those steps runs: on your laptop, on an institutional server, on an FTP site, or on compute and storage you rent from a commercial cloud. These are all connected by the internet.
+To make maps, geographers have lots of tools at their disposal.
+The goal of this talk is to show you that there is tremendous flexibility in how the steps of the mapping workflow are executed by these different tools.
 -->
 
+---
+clicks: 6
 ---
 
 # Traditional mapping workflow
@@ -67,10 +84,11 @@ Every map you've ever made follows the same steps: read raw data into a spatial 
 <div class="diagram-stage" style="zoom: 1.05">
 
 <WorkflowDiagram
-  :remote="['raw']"
-  :local="['raw', '[GIS', '>read', 'layer', '>process', 'processed', '>render', 'image', ']']"
-  :wires="[{ label: 'download', dir: 'to-local' }]"
+  :remote="['raw@1']"
+  :local="['raw@2', '[GIS@3', '>read@4', 'layer@4', '>process@5', 'processed@5', '>render@6', 'image@6', ']']"
+  :wires="[{ label: 'download', dir: 'to-local', at: 2 }]"
   :wire-width="7"
+  :step="$clicks"
 />
 
 </div>
@@ -87,25 +105,68 @@ Problems:
 -->
 
 ---
+clicks: 3
+---
 
-# Web-based subsetting
+# Traditional mapping workflow: Challenges
 
-<div class="diagram-stage" style="zoom: 1.1">
+<div class="challenges">
+  <div class="challenges__list">
+    <div v-for="(c, i) in ['Data gets out of sync', 'Different time or place', 'Multiple sources']" :key="c"
+         class="challenges__item" :class="{ hidden: $clicks < i + 1, current: $clicks === i + 1 }">{{ c }}</div>
+  </div>
+  <ChallengesDiagram :step="$clicks" />
+</div>
+
+---
+
+# We have more to map than ever
+
+<div class="more-data">
+
+<v-clicks depth="2">
+
+- We have access to more data than ever
+    - NASA alone: >180 PB, 2 billion files, from >1000 instruments and modeling systems; not to mention other agencies (USGS, USDA, NOAA, and more)
+    - State and local governments increasingly have their own public data catalogs
+    - Commercial data providers
+- Our problems are bigger and more complex than ever
+- We have more compute resources and capabilities than ever
+
+</v-clicks>
+
+<div v-click class="text-center font-bold text-2xl mt-10">Stop making maps. Start making atlases.</div>
+
+</div>
+
+---
+layout: section
+---
+
+# Remote access patterns
+
+---
+
+# Subsetting at the source
+
+<div class="diagram-stage" style="zoom: 1.05">
 
 <WorkflowDiagram
-  :remote="['raw', '>subset', 'tif']"
+  :remote="['raw|2 TB', '>subset', 'tif|12 MB']"
   :local="['tif', '[GIS', '>read', 'layer', '>render', 'image', ']']"
-  :wires="[{ dir: 'to-local' }]"
+  :wires="[{ dir: 'to-remote' }, { dir: 'to-local' }]"
   :wire-width="11"
 >
   <template #wire-0>
     <div class="subset-badge">
-      <div class="font-semibold not-italic">download</div>
+      <div class="font-semibold not-italic"><GeoIcon name="request" :size="1" /> request</div>
       <div><GeoIcon name="gis" :size="1" /> New Haven only</div>
       <div><GeoIcon name="calendar" :size="1" /> 2020–2024</div>
       <div><GeoIcon name="layer" :size="1" /> 3 of 40 variables</div>
-      <div class="mono">12 MB, not 2 TB</div>
     </div>
+  </template>
+  <template #wire-1>
+    subset.tif <span class="mono not-italic font-bold">12 MB</span>
   </template>
 </WorkflowDiagram>
 
@@ -121,7 +182,7 @@ You still download a file, but it's a much smaller file: just your area, just yo
 
 ---
 
-# Maps API
+# *Mapping* at the source
 
 <div class="diagram-stage">
 
@@ -152,7 +213,7 @@ The long-standing standard for this is OGC WMS (Web Map Service, around since 19
 
 ---
 
-# Maps API <span class="subtitle">/ Example</span>
+# *Mapping* at the source <span class="subtitle">/ Example</span>
 
 <MapsApiDemo />
 
@@ -378,7 +439,13 @@ This is running in this slide, in the browser: no tile server anywhere. The coun
 -->
 
 ---
-clicks: 4
+layout: section
+---
+
+# Making it fast
+
+---
+clicks: 3
 ---
 
 # How remote reads work
@@ -390,11 +457,9 @@ Basically: One request to "map" a file (read the metadata); subsequent requests 
 
 [click] "Opening" a file: the local computer retrieves just the metadata header over the internet: one request, 16 KB.
 
-[click] The header describes the data and shows where every chunk lives: size, CRS, tile size, overviews, and a table of byte offsets for all 171 tiles.
+[click] The header describes the data and shows where every chunk lives: size, CRS, tile size, overviews, and a table of byte offsets for every tile.
 
 [click] Then the actual read grabs only the specific bytes needed: here, the one 1024 × 1024 tile containing Yale.
-
-[click] Or, for a zoomed-out view, a tile of a small overview instead of the full-resolution data.
 
 Example:
 - Why gdalinfo can be fast even for huge files.
@@ -415,7 +480,7 @@ clicks: 5
 <div v-click="2"><GeoIcon name="car" :size="1.3" /> If you're moving across town, you can make a few trips in a car.</div>
 <div v-click="3"><GeoIcon name="truck" :size="1.3" /> If you're moving across the country, you have to pack everything once, neatly, into a truck.</div>
 
-<div v-click="4" class="mt-3">In computers, the relevant limitations are <b>latency</b> and <b>bandwidth</b>.</div>
+<div v-click="4" style="margin-top: 1.4rem">In computers, the relevant limitations are <b>latency</b> and <b>bandwidth</b>.</div>
 
 </div>
 
@@ -464,11 +529,138 @@ A regular GeoTIFF is perfectly fine on a local disk, where seeking is cheap.
 `gdal raster convert --co COMPRESS=DEFLATE --of COG in.tif out.tif` (or `gdal_translate -of COG`) is all it takes.
 -->
 
+
+---
+
+# The cloud-optimized family
+
+<div class="co-family">
+
+| **Data** | **Cloud-optimized format** |
+|---|---|
+| Rasters | Cloud-Optimized GeoTIFF (COG) |
+| Multidimensional arrays / datacubes | Zarr (GeoZarr), Icechunk |
+| Vector (analysis) | GeoParquet |
+| Vector (streaming / display) | FlatGeobuf |
+| Point clouds | COPC (Cloud-Optimized Point Cloud) |
+| Map tiles (raster or vector, e.g. MVT) | PMTiles |
+| 3D models (buildings, meshes) | 3D Tiles (OGC) |
+
+</div>
+
+<!--
+STUB. Same ideas in each: consolidated metadata up front, data chunked so a reader can grab only what it needs.
+-->
+
+---
+clicks: 2
+---
+
+# Overviews
+
+<div class="mb-5">Pre-aggregate data at coarser zoom levels and store in the file.</div>
+
+<OverviewsAnimation :step="$clicks" />
+
+<!--
+[click] Without overviews, a zoomed-out view has to read every full-resolution tile.
+
+[click] With overviews, a zoomed-out view reads a tile of a small overview instead of the full-resolution data.
+
+(Sizes from TCI.tif's tile index, GDAL 3.13.3, 2026-11-11: 121 full-resolution tiles = 219,981,531 bytes; the 4 tiles of the 687² overview = 819,517 bytes. Overview tiles are 512 × 512.)
+-->
+
+---
+
+# Bring the compute to the data
+
+<div class="compute-rows">
+  <div v-click class="compute-row"><div class="compute-row__label">Download</div><ComputeNearData mode="download" /></div>
+  <div v-click class="compute-row"><div class="compute-row__label">Remote access</div><ComputeNearData mode="remote" /></div>
+  <div v-click class="compute-row"><div class="compute-row__label">Compute near the data</div><ComputeNearData mode="near" /></div>
+</div>
+
+<div v-click class="compute-takeaway">
+
+*Understand and measure the performance characteristics of your workflow.*<br>
+If your workflow is limited by data access (downloading, reading) or storage, putting compute next to the data is a good idea.<br>
+If your workflow is limited by CPU/memory (processing), processing locally probably makes more sense.
+
+</div>
+
+<!--
+STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
+-->
+
+---
+clicks: 5
+---
+
+# Caching: Skipping work you've already done
+
+<div class="diagram-stage">
+  <CacheDiagram :step="$clicks" />
+</div>
+
+<!--
+Cloudfront, etc.
+-->
+
+---
+
+# Caching <span class="subtitle">/ Many ways to cache</span>
+
+<div class="cache-rows">
+  <div v-click class="cache-row">
+    <div class="cache-row__label">API server</div>
+    <div style="zoom: 0.62"><CacheDiagram :step="5" /></div>
+  </div>
+  <div v-click class="cache-row">
+    <div class="cache-row__label">Web browser</div>
+    <CacheWays variant="browser" />
+  </div>
+  <div v-click class="cache-row">
+    <div class="cache-row__label">CDN
+      <div class="cache-row__logos"><span><GeoIcon name="cloudflare" :size="1.2" /> Cloudflare</span><span><GeoIcon name="cloudfront" :size="1.2" /> CloudFront</span></div>
+    </div>
+    <CacheWays variant="cdn" />
+  </div>
+</div>
+
 ---
 layout: section
 ---
 
-# Coming next <span class="subtitle">(draft)</span>
+<div class="bowerbird-cover">
+<div>
+
+# Putting it all together: YCGS Bowerbird
+
+<a class="bowerbird-cover__url mono" href="https://d3eu3eflreofpm.cloudfront.net/" target="_blank">https://d3eu3eflreofpm.cloudfront.net/</a>
+
+<img class="bowerbird-cover__qr" src="/bowerbird-qr.svg" alt="QR code for the Bowerbird URL">
+
+</div>
+<img class="bowerbird-cover__shot" src="/bowerbird.png" alt="Bowerbird screenshot">
+</div>
+
+---
+clicks: 4
+---
+
+# How it works
+
+<BowerbirdArchitecture :step="$clicks" />
+
+<!--
+17 datasets, 44 products, from 7.6 cm aerial photos to a 9 km soil-moisture model.
+-->
+
+---
+layout: section
+---
+
+# Other topics <span class="subtitle">(draft)</span>
 
 <div class="small-note">Placeholder slides for sections not yet written</div>
 
@@ -494,33 +686,4 @@ STUB. This is literally how I found the Sentinel-2 file used in this talk: one S
 
 <!--
 STUB. PMTiles ties the "Tiles API" and "How remote reads work" sections together: it's the same trick as a COG, applied to map tiles (vector or raster).
--->
-
----
-
-# The cloud-optimized family <span class="subtitle">(stub)</span>
-
-| Data | Cloud-optimized format |
-|---|---|
-| Rasters | Cloud-Optimized GeoTIFF (COG) |
-| Multidimensional arrays / datacubes | Zarr (GeoZarr) |
-| Vector (analysis) | GeoParquet |
-| Vector (streaming / display) | FlatGeobuf |
-| Point clouds | COPC (Cloud-Optimized Point Cloud) |
-| Map tiles | PMTiles |
-
-<!--
-STUB. Same ideas in each: consolidated metadata up front, data chunked so a reader can grab only what it needs.
--->
-
----
-
-# Bring the compute to the data <span class="subtitle">(stub)</span>
-
-- So far: the data stayed remote, the computer was yours
-- Next: run the analysis *next to* the data (same cloud region): no downloads, much higher bandwidth
-- Notebooks / JupyterHub in the cloud, serverless functions, Dask clusters, …
-
-<!--
-STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
 -->

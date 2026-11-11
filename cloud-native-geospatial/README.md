@@ -21,7 +21,9 @@ npm run export     # PDF (needs: npx playwright install chromium)
   - `MapsApiDemo.vue`: NASA GIBS WMS over New Haven
   - `TileUrlDemo.vue`, `TileGridMap.vue`: OpenStreetMap tiles
   - `DeckRasterDemo.vue`: deck.gl-raster reading a Sentinel-2 COG straight from S3
-- Animations: `RemoteReadAnimation.vue`, `TiffLayoutAnimation.vue`, `TileUrlTemplate.vue` (driven by slide clicks).
+- `LocalComputerBox.vue`: the shared "Your computer" box (GIS + Web browser).
+- Animations (driven by slide clicks): `RemoteReadAnimation.vue`, `OverviewsAnimation.vue` (both on `FileStrip.vue`), `TiffLayoutAnimation.vue`, `TileUrlTemplate.vue`, `ChallengesDiagram.vue`, `CacheDiagram.vue`, `BowerbirdArchitecture.vue`. `ComputeNearData.vue` loops on its own.
+- `public/bowerbird.png` (`node scripts/capture.mjs bowerbird`) and `public/bowerbird-qr.svg`: the Bowerbird slide.
 - `public/fallback/`: cached images shown automatically when a live demo can't reach the network (conference wifi insurance). Regenerate with `node scripts/capture.mjs fallbacks` while `npm run dev` is running.
 
 ## Data used

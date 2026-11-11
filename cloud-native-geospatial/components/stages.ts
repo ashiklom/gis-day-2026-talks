@@ -11,10 +11,11 @@ export const STAGES: Record<string, { icon: IconName, label: string }> = {
   map: { icon: 'gis', label: 'Map' },
 }
 
+/** `at`: click step at which the item appears (undefined = always shown). */
 export type ChainItem =
-  | { kind: 'stage', key: string, icon: IconName, label: string }
-  | { kind: 'arrow', label: string }
-  | { kind: 'group', label: string, items: ChainItem[] }
+  | { kind: 'stage', key: string, icon: IconName, label: string, tag?: string, at?: number }
+  | { kind: 'arrow', label: string, at?: number }
+  | { kind: 'group', label: string, items: ChainItem[], at?: number }
 
 /**
  * Parse a compact chain description:
@@ -22,17 +23,22 @@ export type ChainItem =
  *   '>read'      -> arrow labelled "read"
  *   '[GIS' ... ']' -> group box labelled "GIS"
  *   'raw:My data' -> stage with custom label
+ *   'raw|2 TB'   -> stage with a small size tag under the label
+ *   'raw@3'      -> any token: appears at click step 3 (see StageChain's `step`)
  */
 export function parseChain(spec: string[]): ChainItem[] {
   const root: ChainItem[] = []
   const stack: ChainItem[][] = [root]
-  for (const tok of spec) {
+  for (const raw of spec) {
+    const m = raw.match(/^(.*?)(?:@(\d+))?$/)!
+    const tok = m[1]
+    const at = m[2] !== undefined ? Number(m[2]) : undefined
     const cur = stack[stack.length - 1]
     if (tok.startsWith('>')) {
-      cur.push({ kind: 'arrow', label: tok.slice(1) })
+      cur.push({ kind: 'arrow', label: tok.slice(1), at })
     }
     else if (tok.startsWith('[')) {
-      const g: ChainItem = { kind: 'group', label: tok.slice(1), items: [] }
+      const g: ChainItem = { kind: 'group', label: tok.slice(1), items: [], at }
       cur.push(g)
       stack.push(g.items)
     }
@@ -40,11 +46,12 @@ export function parseChain(spec: string[]): ChainItem[] {
       stack.pop()
     }
     else {
-      const [key, custom] = tok.split(':')
+      const [base, tag] = tok.split('|')
+      const [key, custom] = base.split(':')
       const s = STAGES[key]
       if (!s)
         throw new Error(`Unknown stage "${key}"`)
-      cur.push({ kind: 'stage', key, icon: s.icon, label: custom ?? s.label })
+      cur.push({ kind: 'stage', key, icon: s.icon, label: custom ?? s.label, tag, at })
     }
   }
   return root

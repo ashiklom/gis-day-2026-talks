@@ -1,40 +1,35 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { Segment } from './strip'
 
 /**
  * How a remote reader (GDAL, QGIS, a browser) reads a COG.
  * step 0: the file; 1: "open" = GET header; 2: header decoded into a map of the file;
- * 3: read one full-res tile; 4: read one tile of a coarse overview instead
+ * 3: read the one full-res tile containing Yale.
+ * Overviews are left out here on purpose; they come in on the Overviews slide.
  */
 const props = withDefaults(defineProps<{ step?: number }>(), { step: 0 })
 
-// layout of the real Sentinel-2 TCI COG (GDAL writes smallest overview first, full res last)
-const segments = [
+// the real Sentinel-2 TCI COG: 121 full-res 1024² tiles; Yale is tile (7, 2) = index 29
+const segments: Segment[] = [
   { id: 'hdr', label: 'header', w: 8, tiles: 0 },
-  { id: 'o4', label: '687²', w: 5, tiles: 1 },
-  { id: 'o3', label: '1373²', w: 6, tiles: 4 },
-  { id: 'o2', label: '2745²', w: 10, tiles: 9 },
-  { id: 'o1', label: '5490²', w: 21, tiles: 36 },
-  { id: 'full', label: '10980² (full resolution)', w: 50, tiles: 121 },
+  { id: 'full', label: '10980² full resolution (121 tiles)', w: 92, tiles: 121 },
 ]
 
 const hot = computed(() => {
-  if (props.step === 1 || props.step === 2) return { seg: 'hdr', tile: -1 }
-  if (props.step === 3) return { seg: 'full', tile: 20 }
-  if (props.step >= 4) return { seg: 'o4', tile: 0 }
-  return { seg: '', tile: -1 }
+  if (props.step === 1 || props.step === 2) return { seg: 'hdr' }
+  if (props.step >= 3) return { seg: 'full', tiles: [29] }
+  return undefined
 })
 
 const requestText = computed(() => {
   if (props.step === 1 || props.step === 2) return 'GET Range: bytes=0-16383'
-  if (props.step === 3) return 'GET Range: bytes=127074304-129335295'
-  if (props.step >= 4) return 'GET Range: one tile of the 687² overview'
+  if (props.step >= 3) return 'GET Range: bytes=127074304-129335295'
   return ''
 })
 const requestNote = computed(() => {
   if (props.step === 1 || props.step === 2) return '"open": 16 KB'
-  if (props.step === 3) return '"read Yale at 10 m": 2.3 MB'
-  if (props.step >= 4) return '"show me the whole scene": ~1 tile'
+  if (props.step >= 3) return '"read Yale at 10 m": 2.3 MB'
   return ''
 })
 </script>
@@ -47,7 +42,7 @@ const requestNote = computed(() => {
       </div>
       <div class="rra__wire">
         <Transition name="fade" mode="out-in">
-          <div v-if="step > 0" :key="step" class="rra__req">
+          <div v-if="step > 0" :key="requestText" class="rra__req">
             <div class="mono rra__reqtext">{{ requestText }}</div>
             <FlowArrow dashed :width="13">{{ requestNote }}</FlowArrow>
           </div>
@@ -59,17 +54,7 @@ const requestNote = computed(() => {
       </div>
     </div>
 
-    <div class="rra__strip">
-      <div v-for="s in segments" :key="s.id" class="rra__seg"
-           :class="{ hot: hot.seg === s.id && hot.tile < 0, hdr: s.id === 'hdr' }"
-           :style="{ width: `${s.w}%` }">
-        <div class="rra__tiles">
-          <div v-for="t in Math.min(s.tiles, 40)" :key="t" class="rra__tile"
-               :class="{ hot: hot.seg === s.id && (t - 1) === Math.min(hot.tile, 39) }" />
-        </div>
-        <div class="rra__seglabel">{{ s.label }}</div>
-      </div>
-    </div>
+    <FileStrip :segments="segments" :hot="hot" :max-draw="121" />
     <div class="small-note rra__axis">byte 0 → → → byte 291,914,733 (not to scale)</div>
 
     <Transition name="fade">
@@ -80,7 +65,7 @@ const requestNote = computed(() => {
           <span>CRS</span><span>WGS 84 / UTM zone 18N, 10 m pixels</span>
           <span>tiles</span><span>1024 × 1024, DEFLATE</span>
           <span>overviews</span><span>5490², 2745², 1373², 687²</span>
-          <span>index</span><span>byte offset + length of all 171 tiles</span>
+          <span>index</span><span>byte offset + length of every tile</span>
         </div>
       </div>
     </Transition>
@@ -95,14 +80,6 @@ const requestNote = computed(() => {
 .rra__reqtext { font-size: 0.75rem; color: var(--hot); font-weight: 700; }
 .rra__req :deep(.flow-arrow__label) { font-size: 0.75rem; }
 .rra__remote { display: flex; flex-direction: column; align-items: center; }
-.rra__strip { display: flex; height: 54px; border: 1px solid var(--box-border); border-radius: 4px; }
-.rra__seg { position: relative; border-right: 2px solid var(--box-border); background: var(--box-bg); transition: background 0.3s; }
-.rra__seg.hdr { background: rgba(124, 58, 237, 0.15); }
-.rra__seg.hot { background: var(--hot); }
-.rra__tiles { display: flex; flex-wrap: wrap; gap: 1px; padding: 3px; height: 34px; overflow: hidden; align-content: flex-start; }
-.rra__tile { flex: 1 0 6px; height: 13px; background: rgba(40,109,192,0.3); border-radius: 1px; transition: background 0.3s; }
-.rra__tile.hot { background: var(--hot); box-shadow: 0 0 0 2px var(--hot); }
-.rra__seglabel { position: absolute; top: calc(100% + 3px); left: 3px; font-size: 0.55rem; white-space: nowrap; color: var(--muted); }
 .rra__axis { text-align: center; margin-top: 0.9rem; }
 .rra__map { align-self: flex-start; font-size: 0.75rem; }
 .rra__mapgrid { display: grid; grid-template-columns: auto 1fr; gap: 0.1rem 1rem; }

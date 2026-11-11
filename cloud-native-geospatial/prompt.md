@@ -543,11 +543,14 @@ Pre-aggregate data at coarser zoom levels and store in the file.
 
 <Two rows, each in the "How remote reads work" layout (laptop · request line + arrow · storage + cloud), with its file strip below. GDAL writes the smallest overview first.>
 Row 1, COG without overviews. Strip: header · 10980² full resolution (121 tiles)
-Row 2, COG with overviews. Strip: header · 687² (1 tile) · 1373² (4) · 2745² (9) · 5490² (36) · 10980² full resolution (121)
+Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 2745² (36) · 5490² (121) · 10980² full resolution (121)
+<Overview tiles are 512 × 512; full-resolution tiles are 1024 × 1024.>
 
 <click steps> (row · request · arrow note · what lights up)
-1. Without: header + every full-resolution tile · "show me the whole scene": <captured: total MB of the 121 full-res tiles> · all 121 tiles
-2. With: header + one tile · "show me the whole scene": <captured: size of the single 687² tile> · the single 687² overview tile
+1. Without: header + every full-resolution tile · "show me the whole scene": 220 MB <captured> · all 121 full-resolution tiles
+2. With: header + 4 tiles · "show me the whole scene": 0.8 MB <captured> · the four 687² overview tiles
+
+<captured> Tile sizes read from TCI.tif's tile index with GDAL 3.13.3 on 2026-11-11: 121 full-resolution tiles = 219,981,531 bytes; 4 tiles of the 687² overview = 819,517 bytes.
 }}}
 
 ## Bring the compute to the data
@@ -656,38 +659,52 @@ Datasets
 - Sentinel-2 L2A scene S2B_T18TXL_20250804T154608_L2A, true-color COG (TCI.tif, 291,914,733 bytes), from Earth Search / AWS Open Data:
   https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/18/T/XL/2025/8/S2B_T18TXL_20250804T154608_L2A/TCI.tif
   Defined once in components/cog.ts. Byte offsets and sizes on the remote-read slides come from this file.
+  Tile index (read with GDAL 3.13.3 on 2026-11-11): full resolution 1024² tiles, 11 × 11 = 121, 219,981,531 bytes;
+  overviews use 512² tiles: 5490² (121), 2745² (36), 1373² (9), 687² (4 tiles, 819,517 bytes). Yale is in full-res tile (7, 2).
 - NASA GIBS WMS 1.3.0: https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
 - OpenStreetMap tiles: https://tile.openstreetmap.org/{z}/{x}/{y}.png (© OpenStreetMap contributors)
 - "Yale" point used by the tile demos: 41.3111, -72.9267 (components/tilemath.ts)
 - GDAL output captured 2026-11-09 with GDAL 3.13.3.
 
 Icon names (use in hints as <name icon>; defined in components/icons.ts)
-  where things run: laptop, server, ftp, storage, compute, cloud, internet (any icon can get a small cloud badge)
+  where things run: laptop, server, ftp, storage, compute, cloud, internet, browser, cdn (any icon can get a small cloud badge)
   mapping pipeline: raw-data, layer, processed-layer, image, gis, file-tif
-  actions / misc:   request, download, tiles, code, terminal, search, calendar, palette, subset, package, warning
+  actions / misc:   request, download, tiles, code, terminal, search, calendar, palette, subset, package, warning, rerun, cache
+  vendor logos:     cloudflare, cloudfront
   moving / storage: hand, car, truck, ram, ssd, hdd
 
 Pipeline stage names used in flow diagrams (components/stages.ts)
   Raw data, Spatial layer, Processed layer, Image, subset.tif, Tiles, Map
+  Chain tokens: 'raw|2 TB' adds a size tag; any token + '@n' appears at click n (WorkflowDiagram / StageChain `step`).
 
 Slide → implementation (slides.md holds layout, text and notes for every slide)
 | Slide | Implementation |
 |---|---|
 | Title | slides.md frontmatter + .cover-* in style.css |
-| Concepts | PipelineFlow.vue, WhereItRuns.vue |
-| Traditional / Web-based subsetting / Maps API / Tiles API diagrams | WorkflowDiagram.vue (props in slides.md), StageChain.vue, FlowArrow.vue |
-| Maps API / Example | MapsApiDemo.vue (PRESETS, VARIABLES, DEFAULT); fallback public/fallback/gibs-default.png |
+| Outline, section slides | inline in slides.md (layout: section) |
+| How to make a map | PipelineFlow.vue, WhereItRuns.vue, LocalComputerBox.vue (shared "Your computer" box) |
+| Traditional / Subsetting / Mapping at the source / Tiles API diagrams | WorkflowDiagram.vue (props in slides.md), StageChain.vue, FlowArrow.vue |
+| Traditional mapping workflow: Challenges | ChallengesDiagram.vue |
+| We have more to map than ever | inline in slides.md (v-clicks) |
+| Mapping at the source / Example | MapsApiDemo.vue (PRESETS, VARIABLES, DEFAULT); fallback public/fallback/gibs-default.png |
 | Tiles API URL animation | TileUrlTemplate.vue |
 | Tiles API / Example | TileUrlDemo.vue (PLACES); fallback osm-tile.png |
 | Tiles API / Example: Interactive | TileGridMap.vue; fallback osm-grid.png |
 | You can build your own tiler | snippets/tiler.py; highlight line ranges in slides.md |
 | Access globally, render locally | code + output inline in slides.md; RemoteReadDiagram.vue |
-| Access globally / Example | DeckRasterDemo.vue (live); code inline in slides.md; fallback deck-cog.png |
-| How remote reads work | RemoteReadAnimation.vue |
+| Access globally / Example | DeckRasterDemo.vue (live, no basemap); code inline in slides.md; fallback deck-cog.png |
+| How remote reads work | RemoteReadAnimation.vue, FileStrip.vue (+ strip.ts) |
 | Cloud optimization | inline in slides.md (v-click + table) |
 | Cloud optimization / Example | TiffLayoutAnimation.vue |
-| Coming next + stubs | inline in slides.md |
+| The cloud-optimized family | inline in slides.md (table) |
+| Overviews | OverviewsAnimation.vue, FileStrip.vue |
+| Bring the compute to the data | ComputeNearData.vue (one looping row per mode) |
+| Caching / Many ways to cache | CacheDiagram.vue (step), CacheWays.vue (browser, cdn) |
+| Bowerbird section slide | inline in slides.md; public/bowerbird.png (`node scripts/capture.mjs bowerbird`), public/bowerbird-qr.svg (qrcode package) |
+| How it works | BowerbirdArchitecture.vue |
+| Other topics + stubs | inline in slides.md |
 Offline fallbacks: `node scripts/capture.mjs fallbacks` while `npm run dev` is running.
+Bowerbird screenshot: `node scripts/capture.mjs bowerbird` (no dev server needed).
 Screenshots of every slide + click step (for checking a sync): `node scripts/capture.mjs slides <dir>` (ONLY=3,5,7 to limit).
 
 Bowerbird URL: https://d3eu3eflreofpm.cloudfront.net/
