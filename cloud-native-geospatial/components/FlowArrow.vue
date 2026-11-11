@@ -35,6 +35,7 @@ withDefaults(defineProps<{
   margin-bottom: 0.2rem;
   min-height: 0.9rem;
   font-style: italic;
+  text-wrap: balance;
 }
 .flow-arrow__line {
   position: relative;

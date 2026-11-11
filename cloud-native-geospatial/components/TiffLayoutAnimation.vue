@@ -71,7 +71,7 @@ const rows = computed(() => [
         </div>
       </div>
       <ol class="tla__legend">
-        <li v-for="(t, k) in row.trips.slice(0, row.shown)" :key="k"><span class="tla__num">{{ k + 1 }}</span>{{ t.text }}</li>
+        <li v-for="(t, k) in row.trips" :key="k" class="reveal" :class="{ concealed: k >= row.shown }"><span class="tla__num">{{ k + 1 }}</span>{{ t.text }}</li>
       </ol>
     </div>
   </div>

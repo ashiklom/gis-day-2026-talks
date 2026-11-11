@@ -12,9 +12,9 @@ const props = withDefaults(defineProps<{ step?: number }>(), { step: 3 })
 const on = (n: number) => props.step >= n
 
 const regions = [
-  { region: 'us-west-2', data: 'NASA Earthdata' },
-  { region: 'us-east-1', data: 'NOAA GOES' },
-  { region: 'eu-central-1', data: 'ECMWF ERA5 (Zarr)' },
+  { region: 'us-west-2', data: 'NASA' },
+  { region: 'us-east-1', data: 'NOAA' },
+  { region: 'eu-central-1', data: 'ECMWF (ERA5)' },
 ]
 const tilesToMap = parseChain(['tiles', '>stitch', 'map'])
 const cogToImage = parseChain(['raw:COG', '>read + render (GPU)', 'image'])
@@ -49,7 +49,7 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
     <div class="bba__remote box reveal" :class="{ concealed: !on(2) }" style="grid-row: 3">
       <div class="bba__title">Existing tile services</div>
       <div class="small-note">OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA</div>
-      <StageChain :items="remoteTiles" :size="1.5" :arrow-width="8" />
+      <StageChain class="bba__wide" :items="remoteTiles" :size="1.6" :arrow-width="16" />
     </div>
     <div class="bba__wire reveal" :class="{ concealed: !on(2) }" style="grid-row: 3">
       <FlowArrow dashed reverse :width="10"><span class="mono bba__url">GET /{z}/{x}/{y}.png</span></FlowArrow>
@@ -94,7 +94,7 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 
 <style scoped>
 .bba {
-  display: grid; grid-template-columns: 1fr 185px 255px; grid-template-rows: auto auto auto auto;
+  display: grid; grid-template-columns: 1fr 176px 232px; grid-template-rows: auto auto auto auto;
   gap: 0.45rem 0.4rem; align-items: center; font-size: 0.8rem;
 }
 .bba__localbg { grid-column: 3; grid-row: 1 / 5; align-self: stretch; z-index: 0; }
@@ -121,7 +121,8 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 .bba__region :deep(.flow-arrow__label) { font-size: 0.68rem; }
 /* the icons were introduced earlier; their captions would be too small to read here */
 .bba__region :deep(.geo-icon__label) { display: none; }
-.bba__regionname { width: 5.8rem; line-height: 1.1; }
+.bba__regionname { width: 5.6rem; line-height: 1.1; white-space: nowrap; }
+.bba__wide { align-self: center; margin-top: 0.2rem; }
 .bba__regionlbl { font-size: 0.7rem; font-weight: 700; color: var(--remote); }
 .bba__regiondata { font-size: 0.7rem; }
 .bba__cdn {

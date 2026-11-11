@@ -57,8 +57,7 @@ const requestNote = computed(() => {
     <FileStrip :segments="segments" :hot="hot" :max-draw="121" />
     <div class="small-note rra__axis">byte 0 → → → byte 291,914,733 (not to scale)</div>
 
-    <Transition name="fade">
-      <div v-if="step >= 2" class="rra__map box">
+    <div class="rra__map box reveal" :class="{ concealed: step < 2 }">
         <div class="box-title">What the 16 KB header says</div>
         <div class="mono rra__mapgrid">
           <span>size</span><span>10980 × 10980 px, 3 bands, Byte</span>
@@ -67,8 +66,7 @@ const requestNote = computed(() => {
           <span>overviews</span><span>5490², 2745², 1373², 687²</span>
           <span>index</span><span>byte offset + length of every tile</span>
         </div>
-      </div>
-    </Transition>
+    </div>
   </div>
 </template>
 
@@ -76,14 +74,16 @@ const requestNote = computed(() => {
 .rra { display: flex; flex-direction: column; gap: 0.6rem; }
 .rra__row { display: flex; align-items: center; justify-content: space-between; min-height: 90px; }
 .rra__wire { flex: 1; display: flex; justify-content: center; }
-.rra__req { display: flex; flex-direction: column; align-items: center; }
+.rra__req { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .rra__reqtext { font-size: 0.75rem; color: var(--wire); font-weight: 700; }
-.rra__req :deep(.flow-arrow__label) { font-size: 0.75rem; }
+.rra__req :deep(.flow-arrow__label) { font-size: 0.75rem; margin-bottom: 0.4rem; }
 .rra__remote { display: flex; flex-direction: column; align-items: center; }
 .rra__axis { text-align: center; margin-top: 0.9rem; }
 .rra__map { align-self: flex-start; font-size: 0.75rem; }
 .rra__mapgrid { display: grid; grid-template-columns: auto 1fr; gap: 0.1rem 1rem; }
 .rra__mapgrid span:nth-child(odd) { color: var(--muted); }
+.reveal { transition: opacity 0.3s; }
+.reveal.concealed { opacity: 0; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

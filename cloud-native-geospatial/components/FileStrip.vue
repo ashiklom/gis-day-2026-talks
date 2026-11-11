@@ -42,6 +42,6 @@ function tileHot(s: Segment, t: number) {
 .fs__seg.hot { background: var(--wire); }
 .fs__tiles { display: grid; grid-template-rows: repeat(3, 1fr); grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px; padding: 3px; height: 100%; }
 .fs__tile { background: var(--tile); border-radius: 1px; transition: background 0.3s; }
-.fs__tile.hot { background: var(--wire); box-shadow: 0 0 0 1px var(--wire); }
+.fs__tile.hot { background: var(--wire); }
 .fs__label { position: absolute; top: calc(100% + 3px); left: 3px; font-size: 0.68rem; white-space: nowrap; color: var(--muted); }
 </style>

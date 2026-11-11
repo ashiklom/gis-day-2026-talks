@@ -2,16 +2,17 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 
 /**
- * One looping row of the "Bring the compute to the data" slide.
+ * One row of the "Bring the compute to the data" slide. It plays once when `play` turns true
+ * (the slide passes its click step) and then holds its end state; going back a click resets it.
  * Small blocks travel between Your computer, an S3 bucket in us-west-2 and (mode "near") a tiler
  * in the same region. Travel time stands for latency: slow over the internet, medium within the
  * region, near-instant inside the computer. Timings are illustrative, not measured.
  * Remote on the left, Your computer on the right: positions below are measured from the right
  * edge and mirrored with m() when drawn.
  */
-const props = defineProps<{ mode: 'download' | 'remote' | 'near' }>()
+const props = defineProps<{ mode: 'download' | 'remote' | 'near', play?: boolean }>()
 
-const T = 8 // seconds per loop
+const T = 8 // seconds of timeline (keyframe offsets are fractions of this)
 const INET = 0.9 // one internet hop
 const REGION = 0.3 // one hop inside the cloud region
 const LOCAL = 0.12 // one hop inside the computer
@@ -40,7 +41,7 @@ const hops = computed<Hop[]>(() => {
       h.push({ kind: 'data', from: X.bucket, to: X.copy, t0: 3 * INET + i * 0.12, dur: INET })
     }
     for (let i = 0; i < 6; i++)
-      h.push({ kind: 'data', from: i % 2 ? X.gis : X.copy, to: i % 2 ? X.copy : X.gis, t0: 4 * INET + 0.4 + i * LOCAL, dur: LOCAL })
+      h.push({ kind: 'data', from: i % 2 ? X.gis : X.copy, to: i % 2 ? X.copy : X.gis, t0: 4 * INET + 0.6 + i * LOCAL, dur: LOCAL })
   }
   else {
     h.push({ kind: 'req', from: X.boxR, to: X.tiler - 24, t0: 0, dur: INET })
@@ -56,8 +57,9 @@ const hops = computed<Hop[]>(() => {
 })
 
 // when the Image appears, and how the local copy / cache fills
-const imageAt = computed(() => props.mode === 'download' ? 7.0 : props.mode === 'remote' ? 4 * INET + 1.2 : 2 * INET + 4 * REGION + 0.6)
-const copyFill = computed(() => props.mode === 'download' ? [INET * 2, INET + 13 * 0.28 + INET] : [2 * INET, 4 * INET + 0.3])
+const imageAt = computed(() => props.mode === 'download' ? 7.0 : props.mode === 'remote' ? 4 * INET + 1.4 : 2 * INET + 4 * REGION + 0.6)
+// download: fills as the file streams in; remote: starts only once the last of the 3 blocks has arrived
+const copyFill = computed(() => props.mode === 'download' ? [INET * 2, INET + 13 * 0.28 + INET] : [4 * INET + 0.24, 4 * INET + 0.55])
 
 const stage = ref<HTMLElement>()
 let anims: Animation[] = []
@@ -82,14 +84,14 @@ function start() {
       { offset: b, left: to, opacity: 1 },
       { offset: Math.min(b + 0.002, 1), left: to, opacity: 0 },
       { offset: 1, left: to, opacity: 0 },
-    ], { duration: T * 1000, iterations: Infinity }))
+    ], { duration: T * 1000, fill: 'forwards' }))
   })
   const img = el.querySelector<HTMLElement>('.cnd__image')
   if (img) {
     anims.push(img.animate([
       { offset: 0, opacity: 0.12 }, { offset: at(imageAt.value), opacity: 0.12 },
-      { offset: at(imageAt.value + 0.2), opacity: 1 }, { offset: 0.97, opacity: 1 }, { offset: 1, opacity: 0.12 },
-    ], { duration: T * 1000, iterations: Infinity }))
+      { offset: at(imageAt.value + 0.2), opacity: 1 }, { offset: 1, opacity: 1 },
+    ], { duration: T * 1000, fill: 'forwards' }))
   }
   const fill = el.querySelector<HTMLElement>('.cnd__fill')
   if (fill) {
@@ -97,14 +99,20 @@ function start() {
     const full = props.mode === 'download' ? '100%' : '30%'
     anims.push(fill.animate([
       { offset: 0, width: '0%' }, { offset: at(f0), width: '0%' },
-      { offset: at(f1), width: full }, { offset: 0.97, width: full }, { offset: 1, width: '0%' },
-    ], { duration: T * 1000, iterations: Infinity }))
+      { offset: at(f1), width: full }, { offset: 1, width: full },
+    ], { duration: T * 1000, fill: 'forwards' }))
   }
 }
 
-onMounted(start)
-watch(() => props.mode, () => requestAnimationFrame(start))
-onBeforeUnmount(() => anims.forEach(a => a.cancel()))
+function stop() {
+  anims.forEach(a => a.cancel())
+  anims = []
+}
+
+onMounted(() => props.play && start())
+watch(() => props.play, on => on ? requestAnimationFrame(start) : stop())
+watch(() => props.mode, () => props.play && requestAnimationFrame(start))
+onBeforeUnmount(stop)
 </script>
 
 <template>
@@ -141,6 +149,7 @@ onBeforeUnmount(() => anims.forEach(a => a.cancel()))
 .cnd { position: relative; width: 660px; height: 92px; }
 .cnd__box { position: absolute; top: 0; bottom: 0; padding: 0.2rem 0.4rem; }
 .cnd__boxtitle { font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; gap: 0.2rem; }
+.cnd__image { opacity: 0.12; }
 .cnd__item { position: absolute; top: 50px; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 1; }
 .cnd__copy { width: 48px; height: 22px; border: 1.5px solid var(--box-border); border-radius: 3px; background: var(--bg); overflow: hidden; }
 .cnd__fill { height: 100%; width: 0; background: var(--wire); }

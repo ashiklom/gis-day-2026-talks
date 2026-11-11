@@ -600,12 +600,12 @@ clicks: 2
 # Bring the compute to the data
 
 <div class="compute-rows">
-  <div v-click class="compute-row"><div class="compute-row__label">Download</div><ComputeNearData mode="download" /></div>
-  <div v-click class="compute-row"><div class="compute-row__label">Remote access</div><ComputeNearData mode="remote" /></div>
-  <div v-click class="compute-row"><div class="compute-row__label">Compute near the data</div><ComputeNearData mode="near" /></div>
+  <div v-click="1" class="compute-row"><div class="compute-row__label">Download</div><ComputeNearData mode="download" :play="$clicks >= 1" /></div>
+  <div v-click="2" class="compute-row"><div class="compute-row__label">Remote access</div><ComputeNearData mode="remote" :play="$clicks >= 2" /></div>
+  <div v-click="3" class="compute-row"><div class="compute-row__label">Compute near the data</div><ComputeNearData mode="near" :play="$clicks >= 3" /></div>
 </div>
 
-<div v-click class="compute-takeaway">
+<div v-click="4" class="compute-takeaway">
 
 *Understand and measure the performance characteristics of your workflow.*<br>
 If your workflow is limited by data access (downloading, reading) or storage, putting compute next to the data is a good idea.<br>

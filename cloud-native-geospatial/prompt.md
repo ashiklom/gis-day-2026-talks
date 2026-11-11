@@ -204,7 +204,6 @@ Left: controls.
 - Area dropdown (presets), plus editable W / S / E / N boxes
 - Time (date picker)
 - Variable dropdown
-- Color map: shown but disabled, "(fixed by server)"
 - "Update" button: greyed out unless something changed since the last click. Shows "Rendering…" while loading.
 Left bottom: "Request" box with the request as JSON, plus the real WMS URL underneath in small monospace.
 Right: the rendered PNG, with a caption "NASA GIBS WMS · N.N s round trip".
@@ -569,11 +568,11 @@ Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 274
 
 {{{
 <Centered> **One is an overview, one is full resolution. Can you tell which is which?**
-<Two images side by side, same display size (~360 px square): the whole HLS true-color scene (B04/B03/B02) covering New Haven, HLS.S30.T18TXL.2025276T154009.v2.0 (2025-10-03, 0% cloud), from Microsoft Planetary Computer. Left: rendered from the native 3660 × 3660 (30 m) data. Right: rendered from the 458 × 458 overview (240 m). Both are static PNGs made by a script, committed to public/.>
+<Two images side by side, same display size (~360 px square): the whole HLS true-color scene (B04/B03/B02) covering New Haven, HLS.S30.T18TXL.2025276T154009.v2.0 (2025-10-03, 0% cloud), from Microsoft Planetary Computer. Left: rendered from the native 3660 × 3660 (30 m) data. Right: rendered from the 915 × 915 overview (120 m; the 458 overview looked visibly speckled next to the native image, because HLS builds its overviews by nearest-neighbour). Both are static PNGs made by a script, committed to public/.>
 <click> Under each image:
-  Native (48 MB; 3660 × 3660 px)      Overview (0.86 MB; 458 × 458 px)
-  <captured> Bytes of all tiles at that level, three bands, summed from the files' tile index with GDAL 3.13.3 on 2026-11-11 (scripts/hls_overview.py): native = 48,046,112 bytes; 458² overview = 859,469 bytes.
-<click> A small red box (~3 km, around downtown New Haven / Yale) on each image, and under each a zoomed-in inset of that box: the native one sharp (100 × 100 px), the overview one blocky (~12 × 12 px, nearest-neighbour).
+  Native (48 MB; 3660 × 3660 px)      Overview (3.3 MB; 915 × 915 px)
+  <captured> Bytes of all tiles at that level, three bands, summed from the files' tile index with GDAL 3.13.3 on 2026-11-11 (scripts/hls_overview.py): native = 48,046,112 bytes; 915² overview = 3,301,163 bytes.
+<click> A small red box (~3 km, around downtown New Haven / Yale) on each image, and under each a zoomed-in inset of that box: the native one sharp (100 × 100 px), the overview one blocky (26 × 26 px, nearest-neighbour).
 }}}
 
 ## Bring the compute to the data
@@ -581,11 +580,11 @@ Row 2, COG with overviews. Strip: header · 687² (4 tiles) · 1373² (9) · 274
 STUB. The "cloud computing" half of the title: when the data is in us-west-2, the fastest place to compute on it is in us-west-2.
 
 {{{
-<Three rows, each appearing on its click: label on the left, a looping animation on the right. Shared layout: <storage + cloud> "S3 bucket, us-west-2" on the left; Your computer (LocalComputerBox with GIS) on the right; internet wire between. Data = small colored blocks; travel time shows latency (slow over the internet, medium within the region, near-instant inside the computer).>
+<Three rows, each appearing on its click: label on the left, an animation on the right that plays once when its row appears (not before, not looping) and then holds its end state. Shared layout: <storage + cloud> "S3 bucket, us-west-2" on the left; Your computer (LocalComputerBox with GIS) on the right; internet wire between. Data = small colored blocks; travel time shows latency (slow over the internet, medium within the region, near-instant inside the computer).>
 <click> Download
   <Request → S3; all of the file's blocks stream slowly to the laptop, forming a local copy; then very fast bounces between the local copy and GIS → Image.>
 <click> Remote access
-  <Header request/response, then a few back-and-forth trips, each fetching one block into a local cache → GIS → Image.>
+  <Header request/response, then a few back-and-forth trips fetching 3 blocks; the local cache fills only once all 3 have arrived → GIS → Image.>
 <click> Compute near the data
   <A tiler <compute + cloud badge> sits next to the bucket inside a "us-west-2" region box. Laptop → tiler: tile request. Tiler ↔ S3: quick bounces (header, then a few blocks), faster than the internet but slower than local reads. Tiler → laptop: one small rendered tile → Image.>
 
@@ -639,9 +638,9 @@ https://d3eu3eflreofpm.cloudfront.net/
 <click> Local rendering
   <COGs on S3 → range requests → in the browser, deck.gl-raster reads and renders on the GPU → Image.>
 <click> Existing tile services <small: OpenStreetMap, Esri, USGS, Planetary Computer, CT ECO, NASA>
-  <Remote: Raw data → (read · process · render) → Tiles · wire: GET /{z}/{x}/{y}.png · Local: Tiles → (stitch) → Map>
+  <Remote: Raw data → (read · process · render) → Tiles, a long arrow centred in its box · wire: GET /{z}/{x}/{y}.png · Local: Tiles → (stitch) → Map>
 <click> Our tiler <small: TiTiler on AWS Lambda>, deployed next to the data in 3 regions, behind CloudFront <cdn icon>
-  <Three region boxes stacked vertically, one per deployment: us-west-2 · NASA Earthdata / us-east-1 · NOAA GOES / eu-central-1 · ECMWF ERA5 (Zarr). Each: Raw data → (read · process · render) → Tiles.>
+  <Three region boxes stacked vertically, one per deployment: us-west-2 · NASA / us-east-1 · NOAA / eu-central-1 · ECMWF (ERA5); each name on one line. Each: Raw data → (read · process · render) → Tiles.>
   <A CloudFront node with a cache, between the stack and the wire, joined to each region box by a short line; note: "repeat tiles never reach Lambda". One pair of wires, Your computer ↔ CloudFront.>
 }}}
 
@@ -716,6 +715,9 @@ Layout and styling
   Type: titles in Source Serif 4 (600); body Inter; JetBrains Mono only for code, URLs, byte ranges, JSON.
   Labels are sentence case ("Internet", "Your computer", "Cache"); no ALL-CAPS tracked labels, no italic word in a title.
   Smallest on-slide text: about 0.68rem (≈14 px at 1280 wide). Diagram slides center vertically (.diagram-stage / .stack-stage).
+  Nothing already on screen moves when a click reveals more: later items take their space from the start
+  (class reveal + concealed, not v-if), and boxes/wires whose text changes get fixed widths or min-heights.
+  Text wraps with text-wrap: pretty (no single-word last lines); arrow labels are balanced.
   Step-revealed elements use class "reveal" + "concealed" (opacity 0, keeps its space). Don't use "hidden" or "outline"
   as class names: they are UnoCSS utilities (display: none / an outline border).
 
@@ -745,7 +747,7 @@ Slide → implementation (slides.md holds layout, text and notes for every slide
 | The cloud-optimized family | inline in slides.md (table) |
 | Overviews | OverviewsAnimation.vue, FileStrip.vue |
 | Overviews / Example: HLS | HlsOverviewExample.vue; public/hls-*.png from scripts/hls_overview.py |
-| Bring the compute to the data | ComputeNearData.vue (one looping row per mode) |
+| Bring the compute to the data | ComputeNearData.vue (one row per mode; `play` = the slide's click step) |
 | Caching / Many ways to cache | CacheDiagram.vue (step), CacheWays.vue (browser, cdn) |
 | Bowerbird section slide | inline in slides.md; public/bowerbird.png (`node scripts/capture.mjs bowerbird`), public/bowerbird-qr.svg (qrcode package) |
 | How it works | BowerbirdArchitecture.vue |

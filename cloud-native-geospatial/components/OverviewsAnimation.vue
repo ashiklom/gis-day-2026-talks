@@ -70,11 +70,11 @@ const rows = computed(() => [
 
 <style scoped>
 .ova { display: flex; flex-direction: column; gap: 1.6rem; }
-.ova__top { display: flex; align-items: center; justify-content: space-between; min-height: 64px; margin-bottom: 0.3rem; }
+.ova__top { display: flex; align-items: center; justify-content: space-between; min-height: 76px; margin-bottom: 0.3rem; }
 .ova__wire { flex: 1; display: flex; justify-content: center; }
-.ova__req { display: flex; flex-direction: column; align-items: center; }
+.ova__req { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .ova__reqtext { font-size: 0.72rem; color: var(--wire); font-weight: 700; }
-.ova__req :deep(.flow-arrow__label) { font-size: 0.75rem; }
+.ova__req :deep(.flow-arrow__label) { font-size: 0.75rem; margin-bottom: 0.4rem; }
 .ova__remote { display: flex; flex-direction: column; align-items: center; min-width: 9rem; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }

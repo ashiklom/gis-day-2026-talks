@@ -86,7 +86,6 @@ async function update() {
   loading.value = false
 }
 
-const currentCmap = computed(() => VARIABLES.find(v => v.id === variable.value)?.cmap)
 
 onMounted(update)
 </script>
@@ -111,9 +110,6 @@ onMounted(update)
         <select v-model="variable">
           <option v-for="v in VARIABLES" :key="v.id" :value="v.id">{{ v.label }}</option>
         </select>
-      </label>
-      <label class="disabled" title="GIBS pre-renders each layer with one fixed style">Color map
-        <select disabled><option>{{ currentCmap }} (fixed by server)</option></select>
       </label>
       <button class="update" :disabled="!dirty || loading" @click="update">
         {{ loading ? 'Rendering…' : 'Update' }}
@@ -181,8 +177,8 @@ onMounted(update)
 }
 .url {
   margin-top: 0.25rem;
-  font-size: 0.58rem;
-  line-height: 1.25;
+  font-size: 0.64rem;
+  line-height: 1.3;
   word-break: break-all;
   color: var(--muted);
 }

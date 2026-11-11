@@ -49,7 +49,7 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
         <span class="mono cd__url">{{ reqLabel }}</span>
       </FlowArrow>
       <FlowArrow dashed :width="15" class="cd__wire" :class="{ off: !showResp, hot: hit }" :label="respLabel" />
-      <div v-if="hit" class="cd__note">cache hit: no read, no process, no render</div>
+      <div class="cd__note reveal" :class="{ concealed: !hit }">cache hit: no read, no process, no render</div>
     </div>
 
     <div class="cd__side box cd__local">
@@ -64,17 +64,18 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 .cd__side { display: flex; flex-direction: column; gap: 0.5rem; }
 .cd__local { align-items: center; align-self: stretch; }
 .cd__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
-.cd__pipe { position: relative; opacity: 0.35; transition: opacity 0.3s; }
-.cd__pipe.running { opacity: 1; }
-.cd__pipe.running :deep(.chain > *) { animation: light 0.5s both; }
+/* dim each stage (not the whole pipe), so starting the run never flashes everything lighter first */
+.cd__pipe { position: relative; }
+.cd__pipe :deep(.chain > *) { opacity: 0.35; transition: opacity 0.3s; }
+.cd__pipe.running :deep(.chain > *) { opacity: 1; animation: light 0.5s both; }
 .cd__pipe.running :deep(.chain > *:nth-child(2)) { animation-delay: 0.25s; }
 .cd__pipe.running :deep(.chain > *:nth-child(3)) { animation-delay: 0.5s; }
 .cd__pipe.running :deep(.chain > *:nth-child(4)) { animation-delay: 0.75s; }
 .cd__pipe.running :deep(.chain > *:nth-child(5)) { animation-delay: 1s; }
 .cd__pipe.running :deep(.chain > *:nth-child(6)) { animation-delay: 1.25s; }
 .cd__pipe.running :deep(.chain > *:nth-child(7)) { animation-delay: 1.5s; }
-@keyframes light { from { opacity: 0.2; } to { opacity: 1; } }
-.cd__pipe.skipped { opacity: 0.25; }
+@keyframes light { from { opacity: 0.35; } to { opacity: 1; } }
+.cd__pipe.skipped :deep(.chain > *) { opacity: 0.25; }
 .cd__pipewrap { position: relative; }
 .cd__skip {
   position: absolute; left: 0; right: 0; top: 38%; height: 3px; background: var(--good);
@@ -91,15 +92,17 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 .cd__shelflbl { font-size: 0.75rem; font-weight: 600; color: var(--muted); }
 .cd__file { font-size: 0.68rem; background: var(--bg); border: 1px solid var(--box-border); border-radius: 4px; padding: 0.1rem 0.4rem; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.3s; }
 .cd__shelf.hit .cd__file { border-color: var(--good); color: var(--good); box-shadow: 0 0 0 2px color-mix(in srgb, var(--good) 25%, transparent); font-weight: 700; }
-.cd__wires { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
+.cd__wires { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; width: 16.5rem; flex: none; }
 .cd__internet { font-weight: 600; }
-.cd__wire { transition: opacity 0.3s; }
+.cd__wire { transition: opacity 0.3s; align-self: stretch; }
 .cd__wire.off { opacity: 0; }
 .cd__wire.hot { color: var(--good); }
 .cd__url { font-style: normal; font-size: 0.68rem; white-space: nowrap; }
 .cd__note { color: var(--good); font-weight: 700; font-size: 0.72rem; }
 .cd__img { margin: auto 0; transition: opacity 0.3s; }
 .cd__img.off { opacity: 0; }
+.reveal { transition: opacity 0.3s; }
+.reveal.concealed { opacity: 0; }
 .drop-enter-active { transition: all 0.4s ease-out; }
 .drop-enter-from { opacity: 0; transform: translateY(-1.5rem); }
 </style>

@@ -38,7 +38,7 @@ html.dark {
   --box-border: rgba(143, 182, 234, 0.4);
   --bg: #121212;
 }
-.slidev-layout { color: var(--ink); }
+.slidev-layout { color: var(--ink); text-wrap: pretty; }
 .slidev-layout h1 {
   color: var(--yale);
   font-family: var(--title-font);
@@ -121,7 +121,7 @@ html.dark {
 .subset-badge {
   font-style: normal; font-size: 0.68rem; line-height: 1.35; text-align: left;
   background: var(--bg); border: 1px dashed var(--box-border); border-radius: 6px;
-  padding: 0.25rem 0.5rem; margin-bottom: 0.2rem; display: inline-block;
+  padding: 0.25rem 0.5rem; display: inline-block;
 }
 .api-json {
   font-style: normal; text-align: left; font-size: 0.62rem; line-height: 1.25;
@@ -131,6 +131,8 @@ html.dark {
 .tiler .slidev-code { font-size: 0.68rem !important; line-height: 1.3 !important; }
 .annot { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; border-left: 3px solid var(--yale); background: var(--box-bg); border-radius: 4px; }
 .laptop-box .slidev-code { font-size: 0.66rem !important; line-height: 1.35 !important; }
+/* both states of "Access globally" share one height so the diagram under it doesn't jump */
+.laptop-box { min-height: 17rem; }
 .laptop-box .box-title { display: flex; align-items: center; gap: 0.3rem; }
 .deck-code .slidev-code { font-size: 0.62rem !important; line-height: 1.35 !important; }
 /* ---- latency slide ---- */

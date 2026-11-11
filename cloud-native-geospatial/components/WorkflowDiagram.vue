@@ -83,12 +83,16 @@ const localItems = computed(() => parseChain(props.local))
   white-space: nowrap;
 }
 .wf__wires {
+  position: relative;
+  align-self: stretch;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 1.2rem;
   align-items: center;
+  padding-top: 1.6rem;
 }
 .wf__wire { transition: opacity 0.3s; }
 .wf__wire.concealed { opacity: 0; }
-.wf__internet { font-weight: 600; }
+.wf__internet { font-weight: 600; position: absolute; top: 0.65rem; left: 0; right: 0; text-align: center; }
 </style>
