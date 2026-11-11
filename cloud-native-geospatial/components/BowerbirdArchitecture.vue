@@ -118,7 +118,10 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 /* vertical bracket joining the three lines, then on to CloudFront */
 .bba__bracket { position: absolute; right: 0; top: 16.6%; bottom: 16.6%; border-right: 1.5px solid var(--muted); }
 .bba__bracket::after { content: ''; position: absolute; right: -14px; top: 50%; width: 14px; border-top: 1.5px solid var(--muted); }
-.bba__region :deep(.flow-arrow__label) { font-size: 0.68rem; }
+.bba__region :deep(.flow-arrow__label) { font-size: 0.6rem; margin-bottom: 0.1rem; }
+/* the tiler rows are small, so their arrows are too: thinner line, smaller head */
+.bba__region :deep(.flow-arrow__line) { border-top-width: 1.25px; margin-right: 4px; }
+.bba__region :deep(.flow-arrow__line::after) { right: -6px; top: -4.6px; border-left-width: 7px; border-top-width: 4px; border-bottom-width: 4px; }
 /* the icons were introduced earlier; their captions would be too small to read here */
 .bba__region :deep(.geo-icon__label) { display: none; }
 .bba__regionname { width: 5.6rem; line-height: 1.1; white-space: nowrap; }
