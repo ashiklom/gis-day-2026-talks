@@ -19,7 +19,7 @@ const pct = computed(() => 100 * total.value / props.fileBytes)
     <div class="rrd__remote">
       <GeoIcon name="storage" cloud :size="2" />
       <div class="rrd__file">
-        <div class="rrd__filelabel mono">{{ fileName }} · {{ fmtBytes(fileBytes) }} on AWS S3 (Oregon)</div>
+        <div class="rrd__filelabel">{{ fileName }} · {{ fmtBytes(fileBytes) }} on AWS S3 (Oregon)</div>
         <div class="rrd__bar">
           <div v-for="(r, i) in reads" :key="i" class="rrd__read"
                :style="{ left: `${100 * r.start / fileBytes}%`, width: `max(3px, ${100 * (r.end - r.start + 1) / fileBytes}%)` }">
@@ -43,14 +43,14 @@ const pct = computed(() => 100 * total.value / props.fileBytes)
 .rrd { display: flex; align-items: center; gap: 0.8rem; justify-content: center; }
 .rrd__remote { display: flex; align-items: center; gap: 0.6rem; }
 .rrd__file { width: 360px; }
-.rrd__filelabel { font-size: 0.65rem; margin-bottom: 0.2rem; color: var(--muted); }
+.rrd__filelabel { font-size: 0.72rem; margin-bottom: 0.2rem; color: var(--muted); }
 .rrd__bar {
   position: relative; height: 26px; border-radius: 4px;
-  background: repeating-linear-gradient(90deg, var(--box-bg) 0 8px, rgba(0,53,107,0.12) 8px 9px);
+  background: repeating-linear-gradient(90deg, var(--surface) 0 8px, color-mix(in srgb, var(--line) 45%, transparent) 8px 9px);
   border: 1px solid var(--box-border);
 }
-.rrd__read { position: absolute; top: -3px; bottom: -3px; background: var(--hot); border-radius: 2px; }
-.rrd__readlabel { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--hot); white-space: nowrap; font-weight: 700; }
+.rrd__read { position: absolute; top: -3px; bottom: -3px; background: var(--wire); border-radius: 2px; }
+.rrd__readlabel { position: absolute; top: 30px; left: 50%; transform: translateX(-50%); font-size: 0.72rem; color: var(--wire); white-space: nowrap; font-weight: 700; }
 .rrd__wire { font-size: 0.8rem; }
 .rrd__wire :deep(.flow-arrow__label) { font-style: normal; font-size: 0.72rem; }
 </style>

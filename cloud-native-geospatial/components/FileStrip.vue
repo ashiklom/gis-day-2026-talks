@@ -38,10 +38,10 @@ function tileHot(s: Segment, t: number) {
 <style scoped>
 .fs { display: flex; height: 54px; border: 1px solid var(--box-border); border-radius: 4px; }
 .fs__seg { position: relative; border-right: 2px solid var(--box-border); background: var(--box-bg); transition: background 0.3s; }
-.fs__seg.meta { background: rgba(124, 58, 237, 0.15); }
-.fs__seg.hot { background: var(--hot); }
+.fs__seg.meta { background: color-mix(in srgb, var(--meta) 28%, var(--bg)); }
+.fs__seg.hot { background: var(--wire); }
 .fs__tiles { display: grid; grid-template-rows: repeat(3, 1fr); grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1px; padding: 3px; height: 100%; }
-.fs__tile { background: rgba(40, 109, 192, 0.3); border-radius: 1px; transition: background 0.3s; }
-.fs__tile.hot { background: var(--hot); box-shadow: 0 0 0 1px var(--hot); }
-.fs__label { position: absolute; top: calc(100% + 3px); left: 3px; font-size: 0.55rem; white-space: nowrap; color: var(--muted); }
+.fs__tile { background: var(--tile); border-radius: 1px; transition: background 0.3s; }
+.fs__tile.hot { background: var(--wire); box-shadow: 0 0 0 1px var(--wire); }
+.fs__label { position: absolute; top: calc(100% + 3px); left: 3px; font-size: 0.68rem; white-space: nowrap; color: var(--muted); }
 </style>

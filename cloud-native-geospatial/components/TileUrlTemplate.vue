@@ -29,8 +29,8 @@ const rows = [
 .tut__note { text-align: right; color: var(--muted); font-style: italic; font-size: 0.95rem; }
 .tut__url { font-size: 1.1rem; font-weight: 600; padding: 0.3rem 0.8rem; background: var(--box-bg); border-radius: 8px; }
 .z { color: #7c3aed; }
-.x { color: var(--hot); }
-.y { color: #0891b2; }
+.x { color: #c2410c; }
+.y { color: #0e7490; }
 .reveal { transition: opacity 0.3s; }
 .reveal.concealed { opacity: 0; }
 </style>

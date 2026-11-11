@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
   background: rgba(255,255,255,0.9); color: #111; padding: 2px 8px; border-radius: 6px;
 }
 .deck-demo__attr {
-  position: absolute; right: 4px; bottom: 2px; font-size: 0.55rem;
+  position: absolute; right: 4px; bottom: 2px; font-size: 0.62rem;
   background: rgba(255,255,255,0.75); color: #333; padding: 0 4px;
 }
 </style>

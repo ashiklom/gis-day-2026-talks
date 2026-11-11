@@ -31,7 +31,7 @@ withDefaults(defineProps<{
 
 <style scoped>
 .lcb { display: inline-flex; flex-direction: column; gap: 0.4rem; padding-bottom: 0.7rem; }
-.lcb__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; }
+.lcb__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
 .lcb__tools { display: flex; gap: 1.1rem; justify-content: center; align-items: flex-end; transition: opacity 0.3s; }
 .lcb__tools.concealed { opacity: 0; }
 </style>

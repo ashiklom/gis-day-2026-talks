@@ -71,7 +71,7 @@ const rows = computed(() => [
         </div>
       </div>
       <ol class="tla__legend">
-        <li v-for="(t, k) in row.trips.slice(0, row.shown)" :key="k">{{ t.text }}</li>
+        <li v-for="(t, k) in row.trips.slice(0, row.shown)" :key="k"><span class="tla__num">{{ k + 1 }}</span>{{ t.text }}</li>
       </ol>
     </div>
   </div>
@@ -81,21 +81,22 @@ const rows = computed(() => [
 .tla { display: flex; flex-direction: column; gap: 1.1rem; font-size: 0.8rem; }
 .tla__head { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
 .tla__count { color: var(--muted); }
-.tla__count.on { color: var(--hot); font-weight: 700; }
+.tla__count.on { color: var(--ink); font-weight: 700; }
 .tla__strip { margin-top: 16px; display: flex; height: 44px; border: 1px solid var(--box-border); border-radius: 4px; }
 .tla__seg { position: relative; border-right: 2px solid var(--box-border); }
-.tla__seg.meta { background: rgba(124, 58, 237, 0.18); }
+.tla__seg.meta { background: color-mix(in srgb, var(--meta) 28%, var(--bg)); }
 .tla__seg.data { background: var(--box-bg); }
-.tla__seg.ovr { background: rgba(8, 145, 178, 0.15); }
+.tla__seg.ovr { background: color-mix(in srgb, var(--overview) 20%, var(--bg)); }
 .tla__parts { display: flex; height: 100%; }
-.tla__part { flex: 1; border-right: 1px solid rgba(40,109,192,0.25); transition: background 0.3s; }
-.tla__part.hot { background: rgba(225, 29, 72, 0.55); }
-.tla__seglabel { position: absolute; bottom: -1.15rem; left: 2px; font-size: 0.6rem; color: var(--muted); white-space: nowrap; }
+.tla__part { flex: 1; border-right: 1px solid color-mix(in srgb, var(--line) 60%, transparent); transition: background 0.3s; }
+.tla__part.hot { background: var(--wire); }
+.tla__seglabel { position: absolute; bottom: -1.15rem; left: 2px; font-size: 0.68rem; color: var(--muted); white-space: nowrap; }
 .tla__trip { position: absolute; top: -12px; transform: translateX(-50%); }
 .tla__num {
   display: inline-flex; width: 20px; height: 20px; border-radius: 999px; align-items: center; justify-content: center;
-  background: var(--hot); color: white; font-weight: 700; font-size: 0.7rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  background: var(--wire); color: white; font-weight: 700; font-size: 0.7rem; box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
-.tla__legend { margin: 1.3rem 0 0 1.2rem; padding: 0; font-size: 0.72rem; line-height: 1.35; }
-.tla__legend li { margin: 0; }
+.tla__legend { margin: 1.4rem 0 0; padding: 0; list-style: none; font-size: 0.8rem; line-height: 1.35; display: flex; flex-direction: column; gap: 0.3rem; }
+.tla__legend li { margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+.tla__legend .tla__num { flex-shrink: 0; box-shadow: none; }
 </style>

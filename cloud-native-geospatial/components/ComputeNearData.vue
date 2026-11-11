@@ -122,7 +122,7 @@ onBeforeUnmount(() => anims.forEach(a => a.cancel()))
 
     <!-- the internet -->
     <div class="cnd__wire" :style="{ left: `${m(mode === 'near' ? X.tiler - 50 : X.bucket - 40)}px`, width: `${(mode === 'near' ? X.tiler - 50 : X.bucket - 40) - X.boxR}px` }">
-      <span class="cnd__wirelbl">internet</span>
+      <span class="cnd__wirelbl">Internet</span>
     </div>
 
     <!-- the cloud region -->
@@ -140,18 +140,18 @@ onBeforeUnmount(() => anims.forEach(a => a.cancel()))
 <style scoped>
 .cnd { position: relative; width: 660px; height: 92px; }
 .cnd__box { position: absolute; top: 0; bottom: 0; padding: 0.2rem 0.4rem; }
-.cnd__boxtitle { font-size: 0.6rem; font-weight: 600; display: flex; align-items: center; gap: 0.2rem; }
+.cnd__boxtitle { font-size: 0.7rem; font-weight: 600; display: flex; align-items: center; gap: 0.2rem; }
 .cnd__item { position: absolute; top: 50px; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 1; }
 .cnd__copy { width: 48px; height: 22px; border: 1.5px solid var(--box-border); border-radius: 3px; background: var(--bg); overflow: hidden; }
-.cnd__fill { height: 100%; width: 0; background: rgba(40, 109, 192, 0.6); }
-.cnd__lbl { font-size: 0.55rem; color: var(--muted); margin-top: 2px; white-space: nowrap; }
+.cnd__fill { height: 100%; width: 0; background: var(--wire); }
+.cnd__lbl { font-size: 0.68rem; color: var(--muted); margin-top: 2px; white-space: nowrap; }
 .cnd__wire { position: absolute; top: 46px; border-top: 2px dashed currentColor; opacity: 0.5; }
-.cnd__wirelbl { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; }
+.cnd__wirelbl { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.68rem; font-weight: 600; }
 .cnd__region { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 10px; }
-.cnd__region.boxed { border: 1.5px dashed var(--accent-2); background: rgba(40, 109, 192, 0.05); }
-.cnd__regionlbl { position: absolute; top: 2px; left: 6px; font-size: 0.55rem; font-weight: 700; color: var(--accent-2); }
+.cnd__region.boxed { border: 1.5px dashed var(--remote); background: color-mix(in srgb, var(--remote) 6%, var(--bg)); }
+.cnd__regionlbl { position: absolute; top: 2px; left: 6px; font-size: 0.68rem; font-weight: 700; color: var(--accent-2); }
 .cnd__pkt { position: absolute; top: 40px; width: 11px; height: 11px; margin-left: -5px; opacity: 0; z-index: 2; border-radius: 2px; }
 .cnd__pkt.req { width: 8px; height: 8px; margin-left: -4px; top: 32px; border-radius: 999px; background: var(--muted); }
-.cnd__pkt.data { background: #286dc0; }
-.cnd__pkt.tile { background: var(--accent-warm); width: 13px; height: 13px; }
+.cnd__pkt.data { background: var(--wire); }
+.cnd__pkt.tile { background: var(--wire); width: 13px; height: 13px; outline: 2px solid var(--bg); }
 </style>

@@ -43,9 +43,9 @@ const base = import.meta.env.BASE_URL
 .hoe__pair { display: flex; align-items: flex-start; gap: 0.6rem; }
 .hoe__imgwrap { position: relative; width: 290px; height: 290px; }
 .hoe__img { width: 100%; height: 100%; display: block; border-radius: 4px; }
-.hoe__box { position: absolute; outline: 2px solid #ef4444; outline-offset: 1px; }
+.hoe__box { position: absolute; outline: 2px solid #fff; outline-offset: 1px; box-shadow: 0 0 0 4px rgba(0,0,0,0.45); }
 .hoe__inset { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
-.hoe__insetimg { width: 120px; height: 120px; image-rendering: pixelated; border: 2px solid #ef4444; display: block; }
+.hoe__insetimg { width: 120px; height: 120px; image-rendering: pixelated; border: 2px solid var(--ink); display: block; }
 .hoe__caption { font-size: 1rem; }
 .reveal { transition: opacity 0.3s; }
 .reveal.concealed { opacity: 0; }

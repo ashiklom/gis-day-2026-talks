@@ -73,7 +73,7 @@ const rows = computed(() => [
 .ova__top { display: flex; align-items: center; justify-content: space-between; min-height: 64px; margin-bottom: 0.3rem; }
 .ova__wire { flex: 1; display: flex; justify-content: center; }
 .ova__req { display: flex; flex-direction: column; align-items: center; }
-.ova__reqtext { font-size: 0.72rem; color: var(--hot); font-weight: 700; }
+.ova__reqtext { font-size: 0.72rem; color: var(--wire); font-weight: 700; }
 .ova__req :deep(.flow-arrow__label) { font-size: 0.75rem; }
 .ova__remote { display: flex; flex-direction: column; align-items: center; min-width: 9rem; }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }

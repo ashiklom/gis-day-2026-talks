@@ -34,7 +34,7 @@ const shown = (it: ChainItem) => props.step === undefined || it.at === undefined
 }
 .chain-stage { display: inline-flex; flex-direction: column; align-items: center; }
 .chain-tag {
-  margin-top: 0.2rem; font-size: 0.68rem; font-weight: 700; color: var(--accent-warm);
+  margin-top: 0.2rem; font-size: 0.7rem; font-weight: 700; color: var(--ink);
   border: 1px solid currentColor; border-radius: 4px; padding: 0 0.3rem;
 }
 .chain-group { padding: 0.35rem 0.6rem 0.6rem; }

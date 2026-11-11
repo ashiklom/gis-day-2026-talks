@@ -94,7 +94,7 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 
 <style scoped>
 .bba {
-  display: grid; grid-template-columns: 1fr 160px 270px; grid-template-rows: auto auto auto auto;
+  display: grid; grid-template-columns: 1fr 185px 255px; grid-template-rows: auto auto auto auto;
   gap: 0.45rem 0.4rem; align-items: center; font-size: 0.8rem;
 }
 .bba__localbg { grid-column: 3; grid-row: 1 / 5; align-self: stretch; z-index: 0; }
@@ -105,29 +105,31 @@ const tilerChain = parseChain(['raw', '>read · process · render', 'tiles'])
 .bba__title { font-weight: 700; font-size: 0.8rem; }
 .bba__wire { grid-column: 2; display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
 .bba__local { grid-column: 3; z-index: 1; display: flex; justify-content: center; }
-.bba__url { font-style: normal; font-size: 0.55rem; }
+.bba__url { font-style: normal; font-size: 0.66rem; white-space: nowrap; }
 
 .bba__tiler { display: flex; align-items: center; gap: 0; margin-top: 0.2rem; }
 .bba__stack { position: relative; display: flex; flex-direction: column; gap: 0.3rem; padding-right: 16px; }
 .bba__region {
   position: relative; display: flex; align-items: center; gap: 0.4rem;
-  border: 1.5px dashed var(--accent-2); border-radius: 8px; padding: 0.1rem 0.4rem; background: var(--bg);
+  border: 1.5px dashed var(--remote); border-radius: 8px; padding: 0.1rem 0.4rem; background: var(--bg);
 }
 /* short line from each region box to the bracket */
 .bba__region::after { content: ''; position: absolute; right: -17px; top: 50%; width: 16px; border-top: 1.5px solid var(--muted); }
 /* vertical bracket joining the three lines, then on to CloudFront */
 .bba__bracket { position: absolute; right: 0; top: 16.6%; bottom: 16.6%; border-right: 1.5px solid var(--muted); }
 .bba__bracket::after { content: ''; position: absolute; right: -14px; top: 50%; width: 14px; border-top: 1.5px solid var(--muted); }
-.bba__region :deep(.flow-arrow__label) { font-size: 0.6rem; }
+.bba__region :deep(.flow-arrow__label) { font-size: 0.68rem; }
+/* the icons were introduced earlier; their captions would be too small to read here */
+.bba__region :deep(.geo-icon__label) { display: none; }
 .bba__regionname { width: 5.8rem; line-height: 1.1; }
-.bba__regionlbl { font-size: 0.6rem; font-weight: 700; color: var(--accent-2); }
-.bba__regiondata { font-size: 0.62rem; }
+.bba__regionlbl { font-size: 0.7rem; font-weight: 700; color: var(--remote); }
+.bba__regiondata { font-size: 0.7rem; }
 .bba__cdn {
   margin-left: 14px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.1rem;
-  font-size: 0.7rem; line-height: 1.15; background: var(--bg); border: 1.5px solid var(--accent-warm); border-radius: 8px; padding: 0.3rem 0.4rem; width: 6.2rem;
+  font-size: 0.7rem; line-height: 1.15; background: var(--bg); border: 2px solid var(--good); border-radius: 8px; padding: 0.3rem 0.4rem; width: 6.2rem;
 }
-.bba__cdncache { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.6rem; color: var(--muted); }
-.bba__cdnnote { color: var(--accent-warm); font-size: 0.58rem; }
+.bba__cdncache { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.68rem; color: var(--good); font-weight: 600; }
+.bba__cdnnote { color: var(--good); font-size: 0.68rem; }
 .reveal { transition: opacity 0.3s; }
 .reveal.concealed { opacity: 0; }
 </style>

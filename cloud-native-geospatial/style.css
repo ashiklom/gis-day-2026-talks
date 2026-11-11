@@ -1,14 +1,35 @@
+/*
+ * Design system. Each colour means one thing; see "Design system" in prompt.md.
+ *   --wire    bytes that crossed the network (fetched ranges, requested tiles). Nothing else is red.
+ *   --meta    headers / IFDs / offset tables: the "map" of a file
+ *   --remote  cloud badges, regions, remote-side accents
+ *   --good    cache hits (work skipped, bytes not moved)
+ *   --warn    problems that aren't bytes (stale copies, wasted reads)
+ */
 :root {
-  --yale-blue: #00356b;
-  --accent: #00356b;
-  --accent-2: #286dc0;
-  --accent-warm: #bd5319;
-  --hot: #e11d48;
+  --ink: #1a1f2b;
+  --yale: #00356b;
+  --wire: #e11d48;
+  --meta: #7c6bd6;
+  --remote: #286dc0;
   --good: #166534;
-  --muted: #6b7280;
-  --box-bg: rgba(40, 109, 192, 0.06);
-  --box-border: rgba(0, 53, 107, 0.35);
+  --warn: #b45309;
+  --surface: #eef2f7;
+  --surface-2: #e2e8f1;
+  --line: #94a6bf;
+  --muted: #4b5563;
   --bg: #ffffff;
+  --overview: #0e7490;
+  --tile: #b9cce6;
+  --title-font: 'Source Serif 4', 'Source Serif Pro', Georgia, serif;
+
+  /* older names, kept so components read the same tokens */
+  --yale-blue: var(--yale);
+  --accent: var(--yale);
+  --accent-2: var(--remote);
+  --hot: var(--wire);
+  --box-bg: var(--surface);
+  --box-border: var(--line);
 }
 html.dark {
   --accent: #8fb6ea;
@@ -17,18 +38,26 @@ html.dark {
   --box-border: rgba(143, 182, 234, 0.4);
   --bg: #121212;
 }
-.slidev-layout h1 { color: var(--accent); }
+.slidev-layout { color: var(--ink); }
+.slidev-layout h1 {
+  color: var(--yale);
+  font-family: var(--title-font);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.slidev-layout h1 em { font-style: normal; }
 .slidev-layout h2 { opacity: 0.8; }
 .box {
-  border: 1.5px solid var(--box-border);
-  background: var(--box-bg);
+  border: 1.5px solid var(--line);
+  background: var(--surface);
   border-radius: 12px;
   padding: 0.6rem 0.9rem;
 }
+.box .box { background: var(--surface-2); }
+/* sentence-case label above a block's content */
 .box-title {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
+  font-size: 0.72rem;
+  font-weight: 600;
   color: var(--muted);
   margin-bottom: 0.3rem;
 }
@@ -36,18 +65,59 @@ html.dark {
 .offline-badge {
   position: absolute;
   top: 6px; right: 6px;
-  font-size: 0.65rem;
+  font-size: 0.68rem;
   background: #fef3c7; color: #92400e;
   border-radius: 4px; padding: 1px 6px;
   z-index: 1000;
 }
-.small-note { font-size: 0.7rem; color: var(--muted); }
+.small-note { font-size: 0.72rem; color: var(--muted); }
+
+/* ---- demo controls (Maps / Tiles demos) ---- */
+.slidev-layout select,
+.slidev-layout input[type="text"],
+.slidev-layout input[type="number"],
+.slidev-layout input[type="date"] {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink);
+}
+.slidev-layout input[type="range"],
+.slidev-layout input[type="checkbox"] { accent-color: var(--yale); }
+.slidev-layout select:focus-visible,
+.slidev-layout input:focus-visible,
+.slidev-layout button:focus-visible {
+  outline: 2px solid var(--remote);
+  outline-offset: 2px;
+}
 
 /* ---- slide-specific bits ---- */
-.subtitle { font-size: 0.55em; font-weight: 400; opacity: 0.65; margin-left: 0.3em; }
-.cover-icons { display: flex; gap: 1.2rem; color: var(--accent-2); margin-bottom: 1rem; opacity: 0.9; }
-.cover-meta { margin-top: 2.5rem; font-size: 0.95rem; line-height: 1.5; }
-.slidev-layout.cover h3 { opacity: 0.8; font-weight: 400; }
+/* "/ Example" after a title: the sans face, so it reads as a tag, not part of the title */
+.subtitle { font-family: var(--slidev-font-sans, Inter, sans-serif); font-size: 0.5em; font-weight: 400; color: var(--muted); margin-left: 0.4em; letter-spacing: 0; }
+
+/* ---- cover: the Sentinel-2 scene the talk reads from, full bleed ---- */
+.slidev-layout.cover-hero {
+  position: relative; padding: 0; color: #fff;
+  background: #0d1a14 url('/cover-new-haven.jpg') center / cover no-repeat;
+}
+.slidev-layout.cover-hero::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(100deg, rgba(4, 12, 24, 0.86) 0%, rgba(4, 12, 24, 0.62) 46%, rgba(4, 12, 24, 0.05) 78%);
+}
+.cover-hero__text { position: absolute; left: 3.5rem; bottom: 2.6rem; width: 34rem; }
+.slidev-layout.cover-hero h1 { color: #fff; white-space: nowrap; font-size: 3.4rem; line-height: 1.05; margin-bottom: 0.7rem; }
+.cover-hero__sub { font-size: 1.15rem; line-height: 1.35; color: rgba(255, 255, 255, 0.88); max-width: 26rem; }
+.cover-meta { margin-top: 1.6rem; font-size: 0.85rem; line-height: 1.45; color: rgba(255, 255, 255, 0.88); }
+.cover-meta p { margin: 0 0 0.5rem; }
+.cover-meta strong { color: #fff; }
+.cover-hero__strip { margin-top: 1.4rem; color: rgba(255, 255, 255, 0.85); }
+.cover-hero__credit { position: absolute; right: 0.8rem; bottom: 0.5rem; font-size: 0.62rem; color: rgba(255, 255, 255, 0.75); }
+
+/* ---- outline + section dividers share one four-part track ---- */
+.outline-stage { min-height: 360px; display: flex; align-items: center; }
+.slidev-layout.section > div { text-align: left; }
+.slidev-layout.section h1 { font-size: 3.2rem; line-height: 1.1; max-width: 46rem; }
+.section-track { position: absolute; left: 3.5rem; right: 3.5rem; bottom: 2.5rem; }
 .subset-badge {
   font-style: normal; font-size: 0.68rem; line-height: 1.35; text-align: left;
   background: var(--bg); border: 1px dashed var(--box-border); border-radius: 6px;
@@ -59,20 +129,33 @@ html.dark {
   font-family: var(--slidev-code-font-family, ui-monospace, monospace);
 }
 .tiler .slidev-code { font-size: 0.68rem !important; line-height: 1.3 !important; }
-.annot { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; border-left: 3px solid var(--hot); background: var(--box-bg); border-radius: 4px; }
+.annot { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.6rem; border-left: 3px solid var(--yale); background: var(--box-bg); border-radius: 4px; }
 .laptop-box .slidev-code { font-size: 0.66rem !important; line-height: 1.35 !important; }
 .laptop-box .box-title { display: flex; align-items: center; gap: 0.3rem; }
 .deck-code .slidev-code { font-size: 0.62rem !important; line-height: 1.35 !important; }
-.moving > div { margin: 0.25rem 0; }
-.moving .geo-icon { vertical-align: middle; margin-right: 0.3rem; }
-.latency { margin-top: 0.6rem; }
-.latency table { font-size: 0.72rem; margin: 0 auto; }
-.latency td, .latency th { padding: 0.2rem 0.6rem !important; }
-.latency .geo-icon { vertical-align: middle; margin-right: 0.25rem; }
-.diagram-stage { display: flex; align-items: center; justify-content: center; min-height: 340px; }
+/* ---- latency slide ---- */
+.moving { display: flex; flex-direction: column; gap: 0.45rem; }
+.moving__lead { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.3rem; }
+.moving__row { display: grid; grid-template-columns: 2.2rem 1fr; align-items: center; font-size: 0.95rem; }
+.moving__punch { margin-top: 0.6rem; font-size: 0.95rem; }
+table.latency { margin-top: 0.9rem; width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+table.latency th { font-weight: 600; color: var(--muted); text-align: left; }
+table.latency td, table.latency th { padding: 0.22rem 0.6rem !important; }
+table.latency .geo-icon { vertical-align: middle; margin-right: 0.25rem; }
+.latency__scale { font-weight: 400; }
+.latency__bar { display: flex; align-items: center; gap: 0.6rem; width: 15rem; }
+.latency__track { position: relative; flex: none; width: 8rem; height: 10px; }
+.latency__lo, .latency__hi { position: absolute; top: 0; bottom: 0; left: 0; border-radius: 2px; background: var(--line); }
+.latency__hi { opacity: 0.45; border-radius: 0 2px 2px 0; }
+.latency__http .latency__lo, .latency__http .latency__hi { background: var(--wire); }
+.latency__http td { font-weight: 600; }
+
+/* diagrams sit in the middle of the space under the title, not hard against it */
+.diagram-stage { display: flex; align-items: center; justify-content: center; min-height: 390px; }
+.stack-stage { display: flex; flex-direction: column; justify-content: center; min-height: 400px; }
+.stack-stage--short { min-height: 340px; }
 .reveal { transition: opacity 0.3s; }
 .reveal.concealed { opacity: 0; }
-.toc-list { margin-top: 2.5rem; font-size: 1.6rem; line-height: 1.4; display: flex; flex-direction: column; gap: 1.2rem; }
 .map-intro { display: grid; grid-template-columns: 130px 1fr; align-items: center; gap: 1.4rem 0.5rem; margin-top: 0.8rem; }
 .map-intro__label { font-size: 1.1rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
 .challenges { display: grid; grid-template-columns: 210px 1fr; gap: 1rem; align-items: center; min-height: 360px; }
@@ -80,7 +163,13 @@ html.dark {
 .challenges__item { font-size: 1.1rem; color: var(--muted); transition: all 0.3s; }
 .challenges__item.current { color: inherit; font-weight: 700; }
 .challenges__item.concealed { opacity: 0; }
-.more-data { font-size: 1.15rem; }
+/* ---- "more to map than ever" ---- */
+.more-data { display: flex; flex-direction: column; gap: 0.7rem; margin-top: 0.6rem; }
+.more-data__lead { font-size: 1.15rem; font-weight: 600; }
+.more-data__sources { display: grid; grid-template-columns: 1.6fr 1fr 1fr; gap: 1.2rem; font-size: 0.85rem; line-height: 1.4; color: var(--muted); margin-bottom: 0.4rem; }
+.more-data__sources > div { border-left: 3px solid var(--surface-2); padding-left: 0.7rem; }
+.more-data__figure { display: block; font-family: var(--title-font); font-size: 1.35rem; line-height: 1.2; font-weight: 600; color: var(--yale); margin-bottom: 0.2rem; }
+.more-data__anchor { margin-top: 1.4rem; font-family: var(--title-font); font-size: 2rem; font-weight: 600; color: var(--yale); }
 .co-family table { font-size: 0.9rem; }
 .compute-rows { display: flex; flex-direction: column; gap: 0.6rem; }
 .compute-row { display: grid; grid-template-columns: 170px 1fr; align-items: center; }
@@ -92,11 +181,12 @@ html.dark {
 .cache-row__logos { display: flex; flex-direction: column; gap: 0.2rem; font-size: 0.7rem; font-weight: 400; margin-top: 0.3rem; }
 .cache-row__logos .geo-icon { vertical-align: middle; }
 .bowerbird-cover { display: grid; grid-template-columns: 1fr 1.25fr; gap: 1.5rem; align-items: center; text-align: left; }
-.bowerbird-cover h1 { font-size: 2.1rem !important; line-height: 1.15 !important; }
-.bowerbird-cover__url { display: inline-block; font-size: 0.8rem; margin-top: 0.8rem; }
+.bowerbird-cover h1 { font-size: 2.4rem !important; line-height: 1.12 !important; }
+.bowerbird-cover__url { display: inline-block; font-size: 0.8rem; margin-top: 0.8rem; border-bottom: none !important; color: var(--remote); }
+/* markdown also auto-links the URL text inside the link; drop the theme's dashed underline on both */
+.bowerbird-cover__url a { border-bottom: none !important; }
 .bowerbird-cover__qr { width: 120px; margin-top: 0.8rem; background: white; padding: 6px; border-radius: 6px; }
 .bowerbird-cover__shot { width: 100%; border-radius: 8px; box-shadow: 0 4px 18px rgba(0,0,0,0.25); }
-.more-data li li { font-size: 0.8em; }
 .tiler pre, .tiler code { font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
 .tiler-list { margin: 0.2rem 0 0 1rem; list-style: disc; }
 .tiler-list li { margin: 0; }

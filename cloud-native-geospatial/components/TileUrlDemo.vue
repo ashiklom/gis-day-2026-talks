@@ -100,18 +100,18 @@ watch(url, () => { offline.value = false })
 .row input { width: 100%; }
 .ids { display: flex; gap: 1rem; font-size: 1.1rem; font-weight: 700; }
 .z { color: #7c3aed; }
-.x { color: var(--hot); }
-.y { color: #0891b2; }
+.x { color: #c2410c; }
+.y { color: #0e7490; }
 .url { font-size: 0.8rem; word-break: break-all; font-weight: 600; }
 .url-box { background: var(--box-bg); border-radius: 8px; padding: 0.5rem 0.7rem; }
 .result { display: flex; flex-direction: column; align-items: center; }
 .grid { display: grid; grid-template-columns: repeat(3, 128px); grid-template-rows: repeat(3, 128px); gap: 2px; }
-.cell { position: relative; background: #e5e7eb; overflow: visible; }
+.cell { position: relative; background: var(--surface); overflow: visible; }
 .cell img { width: 100%; height: 100%; display: block; opacity: 0.35; }
-.cell.centre { z-index: 1; transform: scale(1.5); box-shadow: 0 0 0 2px var(--hot), 0 6px 18px rgba(0,0,0,0.35); }
+.cell.centre { z-index: 1; transform: scale(1.5); box-shadow: 0 0 0 2px var(--wire), 0 6px 18px rgba(0,0,0,0.35); }
 .cell.centre img { opacity: 1; }
 .pin {
   position: absolute; width: 10px; height: 10px; margin: -5px 0 0 -5px;
-  border-radius: 999px; background: var(--hot); border: 2px solid white;
+  border-radius: 999px; background: var(--yale); border: 2px solid white;
 }
 </style>

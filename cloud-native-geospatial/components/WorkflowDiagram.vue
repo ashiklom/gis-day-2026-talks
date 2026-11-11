@@ -40,7 +40,7 @@ const localItems = computed(() => parseChain(props.local))
     </div>
 
     <div class="wf__wires">
-      <div class="wf__internet small-note">internet</div>
+      <div class="wf__internet small-note">Internet</div>
       <FlowArrow v-for="(w, i) in wires" :key="i" :dashed="w.dashed ?? true"
                  :reverse="w.dir === 'to-remote'" :width="wireWidth"
                  class="wf__wire" :class="{ concealed: step !== undefined && w.at !== undefined && step < w.at }">
@@ -80,6 +80,7 @@ const localItems = computed(() => parseChain(props.local))
   align-self: flex-start;
   font-weight: 600;
   font-size: 0.85rem;
+  white-space: nowrap;
 }
 .wf__wires {
   display: flex;
@@ -89,5 +90,5 @@ const localItems = computed(() => parseChain(props.local))
 }
 .wf__wire { transition: opacity 0.3s; }
 .wf__wire.concealed { opacity: 0; }
-.wf__internet { letter-spacing: 0.1em; text-transform: uppercase; }
+.wf__internet { font-weight: 600; }
 </style>

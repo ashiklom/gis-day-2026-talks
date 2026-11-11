@@ -72,11 +72,11 @@ defineProps<{ variant: 'browser' | 'cdn' }>()
 .cw__local { align-self: stretch; }
 .cw__spread { justify-content: space-between; align-self: stretch; }
 .cw__shelf { display: flex; align-items: center; gap: 0.4rem; align-self: stretch; border-top: 2px solid var(--box-border); padding-top: 0.3rem; margin-top: 0.3rem; }
-.cw__shelflbl { font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.cw__shelflbl { font-size: 0.68rem; font-weight: 600; color: var(--muted); }
 .cw__file {
   font-size: 0.58rem; background: var(--bg); border: 1px solid var(--good); color: var(--good); font-weight: 700;
   border-radius: 4px; padding: 0.05rem 0.35rem; display: inline-flex; align-items: center; gap: 0.25rem;
-  box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.25);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--good) 25%, transparent);
 }
 .cw__miss { opacity: 0.6; }
 .cw__url { font-style: normal; font-size: 0.6rem; }

@@ -107,12 +107,12 @@ const sources = ['A', 'B', 'C']
 .chd__three { display: flex; flex-direction: column; gap: 0.5rem; }
 .chd__bracket { width: 10px; align-self: stretch; margin: 0.6rem 0; border: 2px solid currentColor; border-left: none; border-radius: 0 8px 8px 0; opacity: 0.6; }
 .ver { font-size: 0.7rem; font-weight: 700; font-family: var(--slidev-code-font-family, monospace); }
-.tint-blue { color: #2563eb; }
-.tint-orange { color: #ea580c; }
-.neq { color: var(--hot); font-size: 2.6rem; font-weight: 800; line-height: 1; }
-.stale { border: 2px solid var(--hot); background: rgba(225, 29, 72, 0.06); padding: 0.3rem 0.5rem 0.5rem; }
-.rerun { color: var(--hot); font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.3rem; margin-top: 0.4rem; }
-.ghost { opacity: 0.45; color: var(--hot); }
+.tint-blue { color: var(--remote); }
+.tint-orange { color: var(--warn); }
+.neq { color: var(--warn); font-size: 2.6rem; font-weight: 800; line-height: 1; }
+.stale { border: 2px solid var(--warn); background: color-mix(in srgb, var(--warn) 8%, var(--bg)); padding: 0.3rem 0.5rem 0.5rem; }
+.rerun { color: var(--warn); font-weight: 700; font-size: 0.8rem; display: flex; align-items: center; gap: 0.3rem; margin-top: 0.4rem; }
+.ghost { opacity: 0.45; color: var(--warn); }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.3s; }
 .fade-enter-from, .fade-leave-to { opacity: 0; }
 </style>

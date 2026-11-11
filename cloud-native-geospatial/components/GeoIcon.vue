@@ -48,7 +48,7 @@ const Badge = icons.cloud
 }
 .geo-icon__label {
   margin-top: 0.3em;
-  font-size: 0.32em;
+  font-size: max(0.32em, 0.68rem);
   text-align: center;
   white-space: nowrap;
   opacity: 0.85;

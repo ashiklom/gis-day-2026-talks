@@ -159,27 +159,30 @@ onMounted(update)
 .disabled { opacity: 0.55; }
 .update {
   margin-top: 0.2rem;
-  background: var(--accent-2);
+  background: var(--yale);
   color: white;
+  border: 1.5px solid var(--yale);
   border-radius: 6px;
   padding: 4px 0;
   font-weight: 600;
 }
-.update:disabled { background: #9ca3af; cursor: not-allowed; }
+/* nothing to update yet: quiet outline, not a grey slab that reads as broken */
+.update:disabled { background: transparent; color: var(--muted); border-color: var(--line); cursor: default; }
 .req { margin-top: 0.2rem; }
 .json {
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   line-height: 1.25;
   margin: 0;
   padding: 0.3rem 0.5rem;
   background: var(--box-bg);
   border-radius: 6px;
-  white-space: pre-wrap;
+  white-space: pre;
+  overflow: hidden;
 }
 .url {
   margin-top: 0.25rem;
-  font-size: 0.5rem;
-  line-height: 1.2;
+  font-size: 0.58rem;
+  line-height: 1.25;
   word-break: break-all;
   color: var(--muted);
 }

@@ -31,11 +31,11 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
         <div class="cd__pipe" :class="{ running, skipped }">
           <StageChain :items="items" :size="size" :arrow-width="3" />
         </div>
-        <div v-if="skipped" class="cd__skip"><span>skipped</span></div>
+        <div v-if="skipped" class="cd__skip"><span>Skipped</span></div>
       </div>
       <div class="cd__shelf" :class="{ hit }">
         <GeoIcon name="cache" :size="1.3" />
-        <span class="cd__shelflbl">cache</span>
+        <span class="cd__shelflbl">Cache</span>
         <Transition name="drop">
           <span v-if="cached" class="cd__file mono"><GeoIcon name="image" :size="1" /> {{ FILE }}</span>
         </Transition>
@@ -44,7 +44,7 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
     </div>
 
     <div class="cd__wires">
-      <div class="cd__internet small-note">internet</div>
+      <div class="cd__internet small-note">Internet</div>
       <FlowArrow dashed reverse :width="15" class="cd__wire" :class="{ off: !showReq }">
         <span class="mono cd__url">{{ reqLabel }}</span>
       </FlowArrow>
@@ -63,7 +63,7 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 .cd { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
 .cd__side { display: flex; flex-direction: column; gap: 0.5rem; }
 .cd__local { align-items: center; align-self: stretch; }
-.cd__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; }
+.cd__head { display: flex; align-items: center; gap: 0.4rem; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
 .cd__pipe { position: relative; opacity: 0.35; transition: opacity 0.3s; }
 .cd__pipe.running { opacity: 1; }
 .cd__pipe.running :deep(.chain > *) { animation: light 0.5s both; }
@@ -82,21 +82,21 @@ const respLabel = computed(() => props.step >= 5 ? 'tile, straight from the cach
 }
 .cd__skip span {
   background: var(--box-bg); padding: 0 0.6rem; line-height: 1.2;
-  color: var(--good); font-weight: 800; font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--good); font-weight: 700; font-size: 0.85rem; border-radius: 999px; border: 2px solid var(--good);
 }
 .cd__shelf {
   display: flex; align-items: center; gap: 0.5rem; min-height: 2.3rem;
   border-top: 2px solid var(--box-border); padding-top: 0.4rem; transition: color 0.3s;
 }
-.cd__shelflbl { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+.cd__shelflbl { font-size: 0.75rem; font-weight: 600; color: var(--muted); }
 .cd__file { font-size: 0.68rem; background: var(--bg); border: 1px solid var(--box-border); border-radius: 4px; padding: 0.1rem 0.4rem; display: inline-flex; align-items: center; gap: 0.3rem; transition: all 0.3s; }
-.cd__shelf.hit .cd__file { border-color: var(--good); color: var(--good); box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.25); font-weight: 700; }
+.cd__shelf.hit .cd__file { border-color: var(--good); color: var(--good); box-shadow: 0 0 0 2px color-mix(in srgb, var(--good) 25%, transparent); font-weight: 700; }
 .cd__wires { display: flex; flex-direction: column; align-items: center; gap: 1.1rem; }
-.cd__internet { letter-spacing: 0.1em; text-transform: uppercase; }
+.cd__internet { font-weight: 600; }
 .cd__wire { transition: opacity 0.3s; }
 .cd__wire.off { opacity: 0; }
 .cd__wire.hot { color: var(--good); }
-.cd__url { font-style: normal; font-size: 0.68rem; }
+.cd__url { font-style: normal; font-size: 0.68rem; white-space: nowrap; }
 .cd__note { color: var(--good); font-weight: 700; font-size: 0.72rem; }
 .cd__img { margin: auto 0; transition: opacity 0.3s; }
 .cd__img.off { opacity: 0; }

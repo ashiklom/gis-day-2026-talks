@@ -39,7 +39,7 @@ const requestNote = computed(() => {
     <div class="rra__row">
       <div class="rra__remote">
         <GeoIcon name="storage" cloud :size="1.6" />
-        <div class="mono small-note">TCI.tif (292 MB)</div>
+        <div class="small-note">TCI.tif (292 MB)</div>
       </div>
       <div class="rra__wire">
         <Transition name="fade" mode="out-in">
@@ -77,7 +77,7 @@ const requestNote = computed(() => {
 .rra__row { display: flex; align-items: center; justify-content: space-between; min-height: 90px; }
 .rra__wire { flex: 1; display: flex; justify-content: center; }
 .rra__req { display: flex; flex-direction: column; align-items: center; }
-.rra__reqtext { font-size: 0.75rem; color: var(--hot); font-weight: 700; }
+.rra__reqtext { font-size: 0.75rem; color: var(--wire); font-weight: 700; }
 .rra__req :deep(.flow-arrow__label) { font-size: 0.75rem; }
 .rra__remote { display: flex; flex-direction: column; align-items: center; }
 .rra__axis { text-align: center; margin-top: 0.9rem; }

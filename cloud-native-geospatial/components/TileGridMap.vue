@@ -75,9 +75,9 @@ onBeforeUnmount(() => map?.remove())
   font-size: 0.8rem; box-shadow: 0 1px 4px rgba(0,0,0,0.3); cursor: pointer;
 }
 :deep(.tile-id) {
-  outline: 1px solid rgba(225, 29, 72, 0.9);
+  outline: 1px solid var(--wire);
   outline-offset: -1px;
-  color: #e11d48;
+  color: var(--wire);
   font: 700 13px/1 ui-monospace, monospace;
   display: flex; align-items: center; justify-content: center;
   text-shadow: 0 0 3px white, 0 0 3px white;
