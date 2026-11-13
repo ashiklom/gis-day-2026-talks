@@ -5,7 +5,7 @@ theme: seriph
 # like them? see https://unsplash.com/collections/94734566/slidev
 # background: https://cover.sli.dev
 # some information about your slides (markdown enabled)
-title: GIS Day - New Haven Lunch
+title: From the ivory tower to the city block
 info: |
     Presented by Alexey Shiklomanov on behalf of Yale Center for Geospatial Solutions
 # apply UnoCSS classes to the current slide
