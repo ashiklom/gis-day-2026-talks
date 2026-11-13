@@ -1,0 +1,23 @@
+.portfolio li {
+  transition: opacity 0.4s, color 0.4s;
+}
+.portfolio li.hidden-item {
+  opacity: 0;
+}
+.portfolio li.faded {
+  color: #888;
+}
+.portfolio img {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  max-width: 120%;
+  max-height: 110%;
+  border-radius: 0.25rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.portfolio img.shown {
+  opacity: 1;
+}
