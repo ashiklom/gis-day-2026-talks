@@ -644,35 +644,6 @@ https://d3eu3eflreofpm.cloudfront.net/
   <A CloudFront node with a cache, between the stack and the wire, joined to each region box by a short line; note: "repeat tiles never reach Lambda". One pair of wires, Your computer ↔ CloudFront.>
 }}}
 
-# Other topics (draft)
-
-{{{
-<Section divider slide.>
-Other topics (draft)
-Placeholder slides for sections not yet written
-}}}
-
-## Finding data: STAC (stub)
-
-STUB. This is literally how I found the Sentinel-2 file used in this talk: one STAC search on Earth Search (Element 84).
-
-{{{
-- SpatioTemporal Asset Catalog: a standard, searchable index of files like the one we just read
-- "Sentinel-2 over New Haven, August 2025, < 5% cloud" → a list of COG URLs
-- Earth Search, Microsoft Planetary Computer, NASA CMR-STAC, …
-}}}
-
-## Tiles without a server: PMTiles (stub)
-
-STUB. PMTiles ties the "Tiles API" and "How remote reads work" sections together: it's the same trick as a COG, applied to map tiles (vector or raster).
-
-{{{
-- A whole tile pyramid in **one file** on plain cloud storage
-- The client reads a small header + directory, then range-requests individual tiles
-- Tiles API + remote reads = no tile server to run
-}}}
-
-
 <!--
 ==========================================================================
 Shared resources (reference for syncing; safe for me to skip)
